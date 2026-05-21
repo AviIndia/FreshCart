@@ -1,7 +1,8 @@
-import logo from '../assets/images/logo/freshcart-logo.svg'
+import { NavLink } from 'react-router-dom'
+import logo from "../assets/images/logo/freshcart-logo.svg";
 const Header = ()=>{
     return(
-        <>
+      <div>
         {/* =================== TOP BAR STARTS=================== */}        
       <div className="border-bottom">
          <div className="bg-light py-1">
@@ -80,18 +81,18 @@ const Header = ()=>{
                   </div>
                </div>
             </div>
-         </div>
+         </div>{/* -------------- End Topbar---------------- */}
          <div className="py-5">
             <div className="container">
                <div className="row w-100 align-items-center gx-lg-2 gx-0">
                   <div className="col-xxl-2 col-lg-3 col-md-6 col-5">
-                     <a className="navbar-brand d-none d-lg-block" href="index.html">
+                     <NavLink to="/" className="navbar-brand d-none d-lg-block">
                         <img src={logo} alt="eCommerce HTML Template" />
-                     </a>
+                     </NavLink>
                      <div className="d-flex justify-content-between w-100 d-lg-none">
-                        <a className="navbar-brand" href="index.html">
-                           <img src={logo} alt="eCommerce HTML Template" />
-                        </a>
+                        <NavLink to="/" className="navbar-brandNavLink">
+                           <img src={logo}  />
+                        </NavLink>
                      </div>
                   </div>
                   <div className="col-xxl-5 col-lg-5 d-none d-lg-block">
@@ -129,7 +130,7 @@ const Header = ()=>{
                   <div className="col-lg-2 col-xxl-2 text-end col-md-6 col-7">
                      <div className="list-inline">
                         <div className="list-inline-item me-5">
-                           <a href="pages/shop-wishlist.html" className="text-muted position-relative">
+                           <NavLink to="/MyWishlist" className="text-muted position-relative">
                               <svg
                                  xmlns="http://www.w3.org/2000/svg"
                                  width="20"
@@ -147,7 +148,7 @@ const Header = ()=>{
                                  5
                                  <span className="visually-hidden">unread messages</span>
                               </span>
-                           </a>
+                           </NavLink>
                         </div>
                         <div className="list-inline-item me-5">
                            <a href="#!" className="text-muted" data-bs-toggle="modal" data-bs-target="#userModal">
@@ -215,7 +216,9 @@ const Header = ()=>{
             <div className="container">
                <div className="offcanvas offcanvas-start" tabIndex="-1" id="navbar-default" aria-labelledby="navbar-defaultLabel">
                   <div className="offcanvas-header pb-1">
-                     <a href="index.html"><img src={logo} alt="eCommerce HTML Template" /></a>
+                    <NavLink to="/" className="navbar-brand">
+   <img src={logo}  />
+</NavLink>
                      <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                   </div>
                   <div className="offcanvas-body">
@@ -281,13 +284,13 @@ const Header = ()=>{
                         <div className="collapse mt-2" id="collapseExample">
                            <div className="card card-body">
                               <ul className="mb-0 list-unstyled">
-                                 <li><a className="dropdown-item" href="pages/shop-grid.html">Dairy, Bread & Eggs</a></li>
-                                 <li><a className="dropdown-item" href="pages/shop-grid.html">Snacks & Munchies</a></li>
-                                 <li><a className="dropdown-item" href="pages/shop-grid.html">Fruits & Vegetables</a></li>
-                                 <li><a className="dropdown-item" href="pages/shop-grid.html">Cold Drinks & Juices</a></li>
-                                 <li><a className="dropdown-item" href="pages/shop-grid.html">Breakfast & Instant Food</a></li>
-                                 <li><a className="dropdown-item" href="pages/shop-grid.html">Bakery & Biscuits</a></li>
-                                 <li><a className="dropdown-item" href="pages/shop-grid.html">Chicken, Meat & Fish</a></li>
+                                 <li><NavLink to="/productSingle/1"  className="dropdown-item" >Dairy, Bread & Eggs</NavLink></li>
+                                 <li><NavLink  className="dropdown-item" >Snacks & Munchies</NavLink></li>
+                                 <li><NavLink  className="dropdown-item" >Fruits & Vegetables</NavLink></li>
+                                 <li><NavLink  className="dropdown-item" >Cold Drinks & Juices</NavLink></li>
+                                 <li><NavLink  className="dropdown-item" >Breakfast & Instant Food</NavLink></li>
+                                 <li><NavLink  className="dropdown-item" >Bakery & Biscuits</NavLink></li>
+                                 <li><NavLink  className="dropdown-item" >Chicken, Meat & Fish</NavLink></li>
                               </ul>
                            </div>
                         </div>
@@ -315,54 +318,50 @@ const Header = ()=>{
                            All Category
                         </button>
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                           <li><a className="dropdown-item" href="pages/shop-grid.html">Dairy, Bread & Eggs</a></li>
-                           <li><a className="dropdown-item" href="pages/shop-grid.html">Snacks & Munchies</a></li>
-                           <li><a className="dropdown-item" href="pages/shop-grid.html">Fruits & Vegetables</a></li>
-                           <li><a className="dropdown-item" href="pages/shop-grid.html">Cold Drinks & Juices</a></li>
-                           <li><a className="dropdown-item" href="pages/shop-grid.html">Breakfast & Instant Food</a></li>
-                           <li><a className="dropdown-item" href="pages/shop-grid.html">Bakery & Biscuits</a></li>
-                           <li><a className="dropdown-item" href="pages/shop-grid.html">Chicken, Meat & Fish</a></li>
+                           <li><NavLink to="/productByCategory/1"  className="dropdown-item" >Dairy, Bread & Eggs</NavLink></li>
+                           <li><NavLink to="/productByCategory/1" className="dropdown-item" >Snacks & Munchies</NavLink></li>
+                           <li><NavLink to="/productByCategory/1" className="dropdown-item" >Fruits & Vegetables</NavLink></li>
+                           <li><NavLink to="/productByCategory/1" className="dropdown-item" >Cold Drinks & Juices</NavLink></li>
+                           <li><NavLink to="/productByCategory/1" className="dropdown-item" >Breakfast & Instant Food</NavLink></li>
+                           <li><NavLink to="/productByCategory/1" className="dropdown-item" >Bakery & Biscuits</NavLink></li>
+                           <li><NavLink to="/productByCategory/1"  className="dropdown-item" >Chicken, Meat & Fish</NavLink></li>
                         </ul>
                      </div>
                      <div>
                         <ul className="navbar-nav align-items-center">
                            <li className="nav-item w-100 w-lg-auto">
-                              <a className="nav-link" href="#" > <i class="bi bi-house-door-fill"></i> Home</a>
-                           </li>
-                            
-                             <li className="nav-item w-100 w-lg-auto">
-                              <a className="nav-link" href="#" ><i class="bi bi-bag-fill"></i> Shop</a>
-                           </li>
-                             <li className="nav-item w-100 w-lg-auto">
-                              <a className="nav-link" href="#" ><i class="bi bi-cart"></i> Cart</a>
+                              <NavLink to="/" className="nav-link" > <i className="bi bi-house-door-fill"></i> Home</NavLink>
                            </li>
                             <li className="nav-item w-100 w-lg-auto">
-                              <a className="nav-link" href="#" ><i class="bi bi-receipt"></i> Checkout</a>
+                              <NavLink to="/Shop" className="nav-link" ><i className="bi bi-bag-fill"></i> Shop</NavLink>
                            </li>
-                           
-                         
-                 
+                             <li className="nav-item w-100 w-lg-auto">
+                              <NavLink to="/Cart" className="nav-link" ><i className="bi bi-cart"></i> Cart</NavLink>
+                           </li>
+                            <li className="nav-item w-100 w-lg-auto">
+                              <NavLink to="/Checkout" className="nav-link" ><i className="bi bi-receipt"></i> Checkout</NavLink>
+                           </li>
                            <li className="nav-item dropdown w-100 w-lg-auto">
-                              <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-circle"></i> Account</a>
+                              <a className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i className="bi bi-person-circle"></i> Account</a>
                               <ul className="dropdown-menu">
-                                 <li><a className="dropdown-item" href="pages/signin.html">Sign in</a></li>
-                                 <li><a className="dropdown-item" href="pages/signup.html">Signup</a></li>
-                                 <li><a className="dropdown-item" href="pages/forgot-password.html">Forgot Password</a></li>
+                                 <li><NavLink to="/Signin" className="dropdown-item" >Sign in</NavLink></li>
+                                 <li><NavLink to="/Signup" className="dropdown-item" >Signup</NavLink></li>
+                                 <li><NavLink to="/Signin" className="dropdown-item" >Forgot Password</NavLink></li>
                                  <li className="dropdown-submenu dropend">
-                                    <a className="dropdown-item dropdown-list-group-item dropdown-toggle" href="#">My Account</a>
+                                    <NavLink className="dropdown-item dropdown-list-group-item dropdown-toggle" href="#">My Account</NavLink>
                                     <ul className="dropdown-menu">
-                                       <li><a className="dropdown-item" href="pages/account-orders.html">Orders</a></li>
-                                       <li><a className="dropdown-item" href="pages/account-settings.html">Settings</a></li>
-                                       <li><a className="dropdown-item" href="pages/account-address.html">Address</a></li>
-                                       <li><a className="dropdown-item" href="pages/account-payment-method.html">Payment Method</a></li>
-                                       <li><a className="dropdown-item" href="pages/account-notification.html">Notification</a></li>
+                                       <li><NavLink to="/MyOrder" className="dropdown-item" >Orders</NavLink></li>
+                                       <li><NavLink to="/Settings" className="dropdown-item" >Settings</NavLink></li>
+                                       <li><NavLink to="/MyAddress" className="dropdown-item" >Address</NavLink></li>
+                                       <li><NavLink to="/MyPaymentMethods" className="dropdown-item">Payment Method</NavLink></li>
+                                       <li><NavLink to="/Signin" className="dropdown-item" >Notification</NavLink></li>
                                     </ul>
                                  </li>
                               </ul>
                            </li>
                            
                             <li className="nav-item w-100 w-lg-auto">
-                              <a className="nav-link" href="#" ><i class="bi bi-envelope"></i> Contact Us</a>
+                              <NavLink to="/Contact" className="nav-link"><i className="bi bi-envelope"></i> Contact Us</NavLink>
                            </li>
                         </ul>
                      </div>
@@ -371,7 +370,7 @@ const Header = ()=>{
                </div>
             </div>
          </nav>
-      </div>
+    
      
       <div className="modal fade" id="userModal" tabIndex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
          <div className="modal-dialog modal-dialog-centered">
@@ -795,7 +794,8 @@ const Header = ()=>{
             </div>
          </div>
       </div>
-        </>
+     </div>  
+     </div> 
     )
 }
 export default Header
