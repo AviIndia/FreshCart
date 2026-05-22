@@ -1,6 +1,12 @@
 import { NavLink } from 'react-router-dom'
 import logo from "../assets/images/logo/freshcart-logo.svg";
+import { useContext} from 'react';
+
+import { CategoryContext } from '../context/CategoryContext';
 const Header = ()=>{
+   const {categories} = useContext(CategoryContext);
+   
+  
     return(
       <div>
         {/* =================== TOP BAR STARTS=================== */}        
@@ -284,13 +290,22 @@ const Header = ()=>{
                         <div className="collapse mt-2" id="collapseExample">
                            <div className="card card-body">
                               <ul className="mb-0 list-unstyled">
-                                 <li><NavLink to="/productSingle/1"  className="dropdown-item" >Dairy, Bread & Eggs</NavLink></li>
-                                 <li><NavLink  className="dropdown-item" >Snacks & Munchies</NavLink></li>
-                                 <li><NavLink  className="dropdown-item" >Fruits & Vegetables</NavLink></li>
-                                 <li><NavLink  className="dropdown-item" >Cold Drinks & Juices</NavLink></li>
-                                 <li><NavLink  className="dropdown-item" >Breakfast & Instant Food</NavLink></li>
-                                 <li><NavLink  className="dropdown-item" >Bakery & Biscuits</NavLink></li>
-                                 <li><NavLink  className="dropdown-item" >Chicken, Meat & Fish</NavLink></li>
+                              {categories?.map((item) => (
+
+                                    <li key={item.id}>
+
+                                       <NavLink
+                                          to={`/productByCategory/${item.id}`}
+                                          className="dropdown-item"
+                                       >
+                                          {item.category_name}
+                                       </NavLink>
+
+                                    </li>
+
+                                    ))}
+
+                                 
                               </ul>
                            </div>
                         </div>
@@ -318,13 +333,21 @@ const Header = ()=>{
                            All Category
                         </button>
                         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                           <li><NavLink to="/productByCategory/1"  className="dropdown-item" >Dairy, Bread & Eggs</NavLink></li>
-                           <li><NavLink to="/productByCategory/1" className="dropdown-item" >Snacks & Munchies</NavLink></li>
-                           <li><NavLink to="/productByCategory/1" className="dropdown-item" >Fruits & Vegetables</NavLink></li>
-                           <li><NavLink to="/productByCategory/1" className="dropdown-item" >Cold Drinks & Juices</NavLink></li>
-                           <li><NavLink to="/productByCategory/1" className="dropdown-item" >Breakfast & Instant Food</NavLink></li>
-                           <li><NavLink to="/productByCategory/1" className="dropdown-item" >Bakery & Biscuits</NavLink></li>
-                           <li><NavLink to="/productByCategory/1"  className="dropdown-item" >Chicken, Meat & Fish</NavLink></li>
+                            {categories?.map((item) => (
+
+                              <li key={item.id}>
+
+                                 <NavLink
+                                    to={`/productByCategory/${item.id}`}
+                                    className="dropdown-item"
+                                 >
+                                    {item.category_name}
+                                 </NavLink>
+
+                              </li>
+
+                              ))}
+
                         </ul>
                      </div>
                      <div>

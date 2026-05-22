@@ -1,7 +1,51 @@
 import Footer from "../components/Footer"
 import Header from "../components/Header"
+import { useContext, useState, useEffect } from 'react';
+import { NavLink, useParams } from 'react-router-dom';
+import { CategoryContext } from './../context/CategoryContext';
+import { productBycategory } from './../services/products';
+import { Pagination } from 'swiper/modules';
+
+
 
 const ProductByCategory = ()=>{
+    const {categories} = useContext(CategoryContext)
+    const { id } = useParams();
+      const [productData, setProductData] = useState([]);
+      const [categorydata,setCategoryData] = useState({});
+      const [pagination,setPagination] = useState({})
+ const fetchProductById = async () => {
+
+    try {
+
+      const res = await productBycategory(id);
+
+      if (res.status) {
+
+        setProductData(res.data.products);
+        setCategoryData(res.data.category);
+        setPagination(res.data.pagination);
+
+        console.log(
+          "Fetched Product by id",
+          res.data
+        );
+      }
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  };
+
+  useEffect(() => {
+
+    fetchProductById();
+
+  }, [id]);
+
+
     return(
       <>
       <Header/>
@@ -17,7 +61,7 @@ const ProductByCategory = ()=>{
                         <ol className="breadcrumb mb-0">
                            <li className="breadcrumb-item"><a href="#!">Home</a></li>
                            <li className="breadcrumb-item"><a href="#!">Shop</a></li>
-                           <li className="breadcrumb-item active" aria-current="page">Snacks & Munchies</li>
+                           <li className="breadcrumb-item active" aria-current="page">{categorydata?.category_name}</li>
                         </ol>
                      </nav>
                   </div>
@@ -43,277 +87,26 @@ const ProductByCategory = ()=>{
                               <h5 className="mb-3">Categories</h5>
                              {/*-- nav  */}
                               <ul className="nav nav-category" id="categoryCollapseMenu">
-                                 <li className="nav-item border-bottom w-100">
-                                    <a href="#" className="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#categoryFlushOne" aria-expanded="false" aria-controls="categoryFlushOne">
-                                       Dairy, Bread & Eggs
-                                       <i className="feather-icon icon-chevron-right"></i>
-                                    </a>
-                                   {/*-- accordion collapse  */}
-                                    <div id="categoryFlushOne" className="accordion-collapse collapse" data-bs-parent="#categoryCollapseMenu">
-                                       <div>
-                                         {/*-- nav  */}
+                                 {categories?.map((item) => (
 
-                                          <ul className="nav flex-column ms-3">
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Milk</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Milk Drinks</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Curd & Yogurt</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Eggs</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Bread</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Buns & Bakery</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Butter & More</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Cheese</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Paneer & Tofu</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Cream & Whitener</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Condensed Milk</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Vegan Drinks</a></li>
-                                          </ul>
-                                       </div>
-                                    </div>
-                                 </li>
-                                {/*-- nav item  */}
-                                 <li className="nav-item border-bottom w-100">
-                                    <a href="#" className="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                       Snacks & Munchies
-                                       <i className="feather-icon icon-chevron-right"></i>
-                                    </a>
+                                       <li
+                                          className="nav-item border-bottom w-100"
+                                          key={item.id}
+                                       >
 
-                                   {/*-- collapse  */}
-                                    <div id="flush-collapseTwo" className="accordion-collapse collapse" data-bs-parent="#categoryCollapseMenu">
-                                       <div>
-                                          <ul className="nav flex-column ms-3">
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Chips & Crisps</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Nachos</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Popcorn</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Bhujia & Mixtures</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Namkeen Snacks</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Healthy Snacks</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Cakes & Rolls</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Energy Bars</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Papad & Fryums</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Rusks & Wafers</a></li>
-                                          </ul>
-                                       </div>
-                                    </div>
-                                 </li>
-                                 <li className="nav-item border-bottom w-100">
-                                    <a href="#" className="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                                       Fruits & Vegetables
-                                       <i className="feather-icon icon-chevron-right"></i>
-                                    </a>
+                                          <NavLink
+                                          className="nav-link"
+                                          to={`/productByCategory/${item.id}`}
+                                          >
+                                          {item.category_name}
 
-                                   {/*-- collapse  */}
-                                    <div id="flush-collapseThree" className="accordion-collapse collapse" data-bs-parent="#categoryCollapseMenu">
-                                       <div>
-                                          <ul className="nav flex-column ms-3">
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link active" aria-current="page" href="#!">Fresh Vegetables</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Herbs & Seasonings</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Fresh Fruits</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Organic Fruits & Vegetables</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Cuts & Sprouts</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Exotic Fruits & Veggies</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Flower Bouquets, Bunches</a>
-                                             </li>
-                                          </ul>
-                                       </div>
-                                    </div>
-                                 </li>
-                                 <li className="nav-item border-bottom w-100">
-                                    <a href="#" className="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
-                                       Cold Drinks & Juices
-                                       <i className="feather-icon icon-chevron-right"></i>
-                                    </a>
+                                          <i className="feather-icon icon-chevron-right"></i>
+                                          </NavLink>
 
-                                   {/*-- collapse  */}
-                                    <div id="flush-collapseFour" className="accordion-collapse collapse" data-bs-parent="#categoryCollapseMenu">
-                                       <div>
-                                          <ul className="nav flex-column ms-3">
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Soft Drinks</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Fruit Juices</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Coldpress</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Energy Drinks</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Water & Ice Cubes</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Soda & Mixers</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Concentrates & Syrups</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Detox & Energy Drinks</a></li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item"><a href="#!" className="nav-link">Juice Collection</a></li>
-                                          </ul>
-                                       </div>
-                                    </div>
-                                 </li>
+                                       </li>
 
-                                 <li className="nav-item border-bottom w-100">
-                                    <a href="#" className="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
-                                       Breakfast & Instant Food
-                                       <i className="feather-icon icon-chevron-right"></i>
-                                    </a>
-
-                                   {/*-- collapse  */}
-                                    <div id="flush-collapseFive" className="accordion-collapse collapse" data-bs-parent="#categoryCollapseMenu">
-                                       <div>
-                                          <ul className="nav flex-column ms-3">
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link active" aria-current="page" href="#!">Batter</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Breakfast Cereal</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Noodles, Pasta & Soup</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Frozen Non-Veg Snackss</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Frozen Veg</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Vermicelli</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Instant Mixes</a>
-                                             </li>
-                                          </ul>
-                                       </div>
-                                    </div>
-                                 </li>
-                                 <li className="nav-item border-bottom w-100">
-                                    <a href="#" className="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix">
-                                       Bakery & Biscuits
-                                       <i className="feather-icon icon-chevron-right"></i>
-                                    </a>
-
-                                   {/*-- collapse  */}
-                                    <div id="flush-collapseSix" className="accordion-collapse collapse" data-bs-parent="#categoryCollapseMenu">
-                                       <div>
-                                          <ul className="nav flex-column ms-3">
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link active" aria-current="page" href="#!">Cookies</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Glucose & Marie</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Sweet & Salty</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Healthy & Digestive</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Cream Biscuits</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Rusks & Wafers</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Cakes & Rolls</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Buns & Bakery</a>
-                                             </li>
-                                          </ul>
-                                       </div>
-                                    </div>
-                                 </li>
-                                 <li className="nav-item border-bottom w-100">
-                                    <a href="#" className="nav-link collapsed" data-bs-toggle="collapse" data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven">
-                                       Chicken, Meat & Fish
-                                       <i className="feather-icon icon-chevron-right"></i>
-                                    </a>
-
-                                   {/*-- collapse  */}
-                                    <div id="flush-collapseSeven" className="accordion-collapse collapse" data-bs-parent="#categoryCollapseMenu">
-                                       <div>
-                                          <ul className="nav flex-column ms-3">
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link active" aria-current="page" href="#!">Chicken</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Sausage, Salami & Ham</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Exotic Meat</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Eggs</a>
-                                             </li>
-                                            {/*-- nav item  */}
-                                             <li className="nav-item">
-                                                <a className="nav-link" href="#!">Frozen Non-Veg Snacks</a>
-                                             </li>
-                                          </ul>
-                                       </div>
-                                    </div>
-                                 </li>
+                                    ))}
+                                                            
                               </ul>
                            </div>
 
@@ -473,14 +266,14 @@ const ProductByCategory = ()=>{
                      <div className="card mb-4 bg-light border-0">
                        {/*-- card body  */}
                         <div className="card-body p-9">
-                           <h2 className="mb-0 fs-1">Snacks & Munchies</h2>
+                           <h2 className="mb-0 fs-1">{categorydata?.category_name}</h2>
                         </div>
                      </div>
                     {/*-- list icon  */}
                      <div className="d-lg-flex justify-content-between align-items-center">
                         <div className="mb-3 mb-lg-0">
                            <p className="mb-0">
-                              <span className="text-dark">24</span>
+                              <span className="text-dark">{pagination?.total_products} </span>
                               Products found
                            </p>
                         </div>
