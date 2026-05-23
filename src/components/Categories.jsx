@@ -4,61 +4,17 @@ import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 
-import dairy from "../assets/images/category/category-dairy-bread-eggs.jpg";
-import snack from "../assets/images/category/category-snack-munchies.jpg";
-import bakery from "../assets/images/category/category-bakery-biscuits.jpg";
-import instant from "../assets/images/category/category-instant-food.jpg";
-import tea from "../assets/images/category/category-tea-coffee-drinks.jpg";
-import atta from "../assets/images/category/category-atta-rice-dal.jpg";
-import baby from "../assets/images/category/category-baby-care.jpg";
-import chicken from "../assets/images/category/category-chicken-meat-fish.jpg";
-import cleaning from "../assets/images/category/category-cleaning-essentials.jpg";
-import pet from "../assets/images/category/category-pet-care.jpg";
 
-const categories = [
-  {
-    image: dairy,
-    title: "Dairy, Bread & Eggs",
-  },
-  {
-    image: snack,
-    title: "Snack & Munchies",
-  },
-  {
-    image: bakery,
-    title: "Bakery & Biscuits",
-  },
-  {
-    image: instant,
-    title: "Instant Food",
-  },
-  {
-    image: tea,
-    title: "Tea, Coffee & Drinks",
-  },
-  {
-    image: atta,
-    title: "Atta, Rice & Dal",
-  },
-  {
-    image: baby,
-    title: "Baby Care",
-  },
-  {
-    image: chicken,
-    title: "Chicken, Meat & Fish",
-  },
-  {
-    image: cleaning,
-    title: "Cleaning Essentials",
-  },
-  {
-    image: pet,
-    title: "Pet Care",
-  },
-];
+import { useContext } from "react";
+import { CategoryContext } from "../context/CategoryContext";
+import { NavLink } from "react-router-dom";
+
+
 
 const FeaturedCategory = () => {
+  
+const {categories} = useContext(CategoryContext);
+
   return (
     <section className="mb-lg-10 mt-lg-14 my-8">
       <div className="container">
@@ -109,26 +65,26 @@ const FeaturedCategory = () => {
         >
           {categories.map((item, index) => (
             <SwiperSlide key={index}>
-              <a
-                href="#!"
+              <NavLink  to={`/productByCategory/${item.id}`}
+                
                 className="text-decoration-none text-inherit"
               >
                 <div className="card card-product mb-lg-4">
                   <div className="card-body text-center py-8">
 
                     <img
-                      src={item.image}
-                      alt={item.title}
+                      src={item.category_image}
+                      alt={item.category_name}
                       className="mb-3 img-fluid"
                     />
 
                     <div className="text-truncate">
-                      {item.title}
+                      {item.category_name}
                     </div>
 
                   </div>
                 </div>
-              </a>
+              </NavLink>
             </SwiperSlide>
           ))}
         </Swiper>
