@@ -1,12 +1,212 @@
 import { NavLink } from 'react-router-dom'
 import logo from "../assets/images/logo/freshcart-logo.svg";
-import { useContext} from 'react';
+import { useContext,useEffect} from 'react';
 
 import { CategoryContext } from '../context/CategoryContext';
+import { getCartItems } from '../services/cart';
+import { useCart } from '../context/CartContext';
+import {
+   updateCart
+} from "../services/cart";
+
+import {
+   updateGuestCartQty
+} from "../utils/cartHelper";
+
+import {
+   removeCartItem
+} from "../services/cart";
+
+import {
+   removeGuestCartItem
+} from "../utils/cartHelper";
 const Header = ()=>{
+   const { cartItems,setCartItems,cartCount,setCartCount } = useCart();
    const {categories} = useContext(CategoryContext);
-   
-  
+ 
+const loadCartCount = async () => {
+
+   const token = localStorage.getItem("token");
+
+   if (token) {
+
+      try {
+
+         const res = await getCartItems();
+
+         if (res.status) {
+
+            setCartCount(res.data.length);
+
+         }
+
+      } catch (error) {
+
+         console.log(error);
+
+      }
+
+   } else {
+
+      const guestCart =
+         JSON.parse(localStorage.getItem("guest_cart")) || [];
+
+      setCartCount(guestCart.length);
+
+   }
+
+};
+
+   /* ============ LOAD CART ITEMS =============== */
+   const loadCartItems = async () => {
+
+   const token = localStorage.getItem("token");
+
+   // LOGIN USER
+   if (token) {
+
+      try {
+
+         const res = await getCartItems();
+
+         if (res.status) {
+
+            setCartItems(res.data);
+
+            setCartCount(res.data.length);
+
+         }
+
+      } catch (error) {
+
+         console.log(error);
+
+      }
+
+   }
+
+   // GUEST USER
+   else {
+
+      const guestCart =
+         JSON.parse(localStorage.getItem("guest_cart")) || [];
+
+      setCartItems(guestCart);
+
+      setCartCount(guestCart.length);
+
+   }
+
+};
+
+
+
+
+  useEffect(() => {
+
+   loadCartCount();loadCartItems();
+
+},[]);
+
+/* =================== CART QTY HANDLE ============== */
+const handleQuantity = async (
+   productId,
+   type,
+   currentQty
+) => {
+
+   const token = localStorage.getItem("token");
+
+   // LOGIN USER
+   if (token) {
+
+      try {
+
+         let qty =
+            type === "increase"
+               ? currentQty + 1
+               : currentQty - 1;
+
+         if (qty < 1) qty = 1;
+
+         const payload = {
+            product_id: productId,
+            qty
+         };
+
+         const res =
+            await updateCart(payload);
+
+         if (res.status) {
+
+            await loadCartItems();
+
+         }
+
+      } catch (error) {
+
+         console.log(error);
+
+      }
+
+   }
+
+   // GUEST USER
+   else {
+
+      const updatedCart =
+         updateGuestCartQty(productId, type);
+
+      setCartItems(updatedCart);
+
+      setCartCount(updatedCart.length);
+
+   }
+
+};
+
+const handleRemoveCart = async (
+   productId
+) => {
+
+   const token = localStorage.getItem("token");
+
+   // LOGIN USER
+   if (token) {
+
+      try {
+
+         const res =
+            await removeCartItem(productId);
+
+         if (res.status) {
+
+            await loadCartItems();
+
+         }
+
+      } catch (error) {
+
+         console.log(error);
+
+      }
+
+   }
+
+   // GUEST USER
+   else {
+
+      const updatedCart =
+         removeGuestCartItem(productId);
+
+      setCartItems(updatedCart);
+
+      setCartCount(updatedCart.length);
+
+   }
+
+};
+
     return(
       <div>
         {/* =================== TOP BAR STARTS=================== */}        
@@ -192,7 +392,7 @@ const Header = ()=>{
                                  <path d="M16 10a4 4 0 0 1-8 0"></path>
                               </svg>
                               <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
-                                 1
+                                {cartCount}
                                  <span className="visually-hidden">unread messages</span>
                               </span>
                            </a>
@@ -457,287 +657,139 @@ const Header = ()=>{
                </div>
                <ul className="list-group list-group-flush">
                  
-                  <li className="list-group-item py-3 ps-0 border-top">
-                    
-                     <div className="row align-items-center">
-                        <div className="col-6 col-md-6 col-lg-7">
-                           <div className="d-flex">
-                              <img src="assets/images/products/product-img-1.jpg" alt="Ecommerce" className="icon-shape icon-xxl" />
-                              <div className="ms-3">
-                              
-                                 <a href="pages/shop-single.html" className="text-inherit">
-                                    <h6 className="mb-0">Haldiram's Sev Bhujia</h6>
-                                 </a>
-                                 <span><small className="text-muted">.98 / lb</small></span>
-                                
-                                 <div className="mt-2 small lh-1">
-                                    <a href="#!" className="text-decoration-none text-inherit">
-                                       <span className="me-1 align-text-bottom">
-                                          <svg
-                                             xmlns="http://www.w3.org/2000/svg"
-                                             width="14"
-                                             height="14"
-                                             viewBox="0 0 24 24"
-                                             fill="none"
-                                             stroke="currentColor"
-                                             strokeWidth="2"
-                                             strokeLinecap="round"
-                                             strokeLinejoin="round"
-                                             className="feather feather-trash-2 text-success">
-                                             <polyline points="3 6 5 6 21 6"></polyline>
-                                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                             <line x1="10" y1="11" x2="10" y2="17"></line>
-                                             <line x1="14" y1="11" x2="14" y2="17"></line>
-                                          </svg>
-                                       </span>
-                                       <span className="text-muted">Remove</span>
-                                    </a>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        
-                        <div className="col-4 col-md-3 col-lg-3">
-                           
-                           <div className="input-group input-spinner">
-                              <input type="button" defaultValue="-" className="button-minus btn btn-sm" data-field="quantity" />
-                              <input type="number" step="1" max="10" defaultValue="1" name="quantity" className="quantity-field form-control-sm form-input" />
-                              <input type="button" defaultValue="+" className="button-plus btn btn-sm" data-field="quantity" />
-                           </div>
-                        </div>
-                       
-                        <div className="col-2 text-lg-end text-start text-md-end col-md-2">
-                           <span className="fw-bold">$5.00</span>
-                        </div>
-                     </div>
-                  </li>
-                 
-                  <li className="list-group-item py-3 ps-0">
-                    
-                     <div className="row align-items-center">
-                        <div className="col-6 col-md-6 col-lg-7">
-                           <div className="d-flex">
-                              <img src="assets/images/products/product-img-2.jpg" alt="Ecommerce" className="icon-shape icon-xxl" />
-                              <div className="ms-3">
-                                 <a href="pages/shop-single.html" className="text-inherit">
-                                    <h6 className="mb-0">NutriChoice Digestive</h6>
-                                 </a>
-                                 <span><small className="text-muted">250g</small></span>
-                                 
-                                 <div className="mt-2 small lh-1">
-                                    <a href="#!" className="text-decoration-none text-inherit">
-                                       <span className="me-1 align-text-bottom">
-                                          <svg
-                                             xmlns="http://www.w3.org/2000/svg"
-                                             width="14"
-                                             height="14"
-                                             viewBox="0 0 24 24"
-                                             fill="none"
-                                             stroke="currentColor"
-                                             strokeWidth="2"
-                                             strokeLinecap="round"
-                                             strokeLinejoin="round"
-                                             className="feather feather-trash-2 text-success">
-                                             <polyline points="3 6 5 6 21 6"></polyline>
-                                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                             <line x1="10" y1="11" x2="10" y2="17"></line>
-                                             <line x1="14" y1="11" x2="14" y2="17"></line>
-                                          </svg>
-                                       </span>
-                                       <span className="text-muted">Remove</span>
-                                    </a>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
+                  {
+                           cartItems.map((item, index) => (
 
-                        
-                        <div className="col-4 col-md-3 col-lg-3">
-                           
-                           <div className="input-group input-spinner">
-                              <input type="button" defaultValue="-" className="button-minus btn btn-sm" data-field="quantity" />
-                              <input type="number" step="1" max="10" defaultValue="1" name="quantity" className="quantity-field form-control-sm form-input" />
-                              <input type="button" defaultValue="+" className="button-plus btn btn-sm" data-field="quantity" />
-                           </div>
-                        </div>
-                        
-                        <div className="col-2 text-lg-end text-start text-md-end col-md-2">
-                           <span className="fw-bold text-danger">$20.00</span>
-                           <div className="text-decoration-line-through text-muted small">$26.00</div>
-                        </div>
-                     </div>
-                  </li>
-                 
-                  <li className="list-group-item py-3 ps-0">
-                   
-                     <div className="row align-items-center">
-                        <div className="col-6 col-md-6 col-lg-7">
-                           <div className="d-flex">
-                              <img src="assets/images/products/product-img-3.jpg" alt="Ecommerce" className="icon-shape icon-xxl" />
-                              <div className="ms-3">
-                               
-                                 <a href="pages/shop-single.html" className="text-inherit">
-                                    <h6 className="mb-0">Cadbury 5 Star Chocolate</h6>
-                                 </a>
-                                 <span><small className="text-muted">1 kg</small></span>
-                                
-                                 <div className="mt-2 small lh-1">
-                                    <a href="#!" className="text-decoration-none text-inherit">
-                                       <span className="me-1 align-text-bottom">
-                                          <svg
-                                             xmlns="http://www.w3.org/2000/svg"
-                                             width="14"
-                                             height="14"
-                                             viewBox="0 0 24 24"
-                                             fill="none"
-                                             stroke="currentColor"
-                                             strokeWidth="2"
-                                             strokeLinecap="round"
-                                             strokeLinejoin="round"
-                                             className="feather feather-trash-2 text-success">
-                                             <polyline points="3 6 5 6 21 6"></polyline>
-                                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                             <line x1="10" y1="11" x2="10" y2="17"></line>
-                                             <line x1="14" y1="11" x2="14" y2="17"></line>
-                                          </svg>
-                                       </span>
-                                       <span className="text-muted">Remove</span>
-                                    </a>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
+                              <li
+                                 className="list-group-item py-3 ps-0 border-top"
+                                 key={index}
+                              >
 
-                       
-                        <div className="col-4 col-md-3 col-lg-3">
-                           
-                           <div className="input-group input-spinner">
-                              <input type="button" defaultValue="-" className="button-minus btn btn-sm" data-field="quantity" />
-                              <input type="number" step="1" max="10" defaultValue="1" name="quantity" className="quantity-field form-control-sm form-input" />
-                              <input type="button" defaultValue="+" className="button-plus btn btn-sm" data-field="quantity" />
-                           </div>
-                        </div>
-                       
-                        <div className="col-2 text-lg-end text-start text-md-end col-md-2">
-                           <span className="fw-bold">$15.00</span>
-                           <div className="text-decoration-line-through text-muted small">$20.00</div>
-                        </div>
-                     </div>
-                  </li>
-                
-                  <li className="list-group-item py-3 ps-0">
-                    
-                     <div className="row align-items-center">
-                        <div className="col-6 col-md-6 col-lg-7">
-                           <div className="d-flex">
-                              <img src="assets/images/products/product-img-4.jpg" alt="Ecommerce" className="icon-shape icon-xxl" />
-                              <div className="ms-3">
-                                 
-                                 <a href="pages/shop-single.html" className="text-inherit">
-                                    <h6 className="mb-0">Onion Flavour Potato</h6>
-                                 </a>
-                                 <span><small className="text-muted">250g</small></span>
-                                
-                                 <div className="mt-2 small lh-1">
-                                    <a href="#!" className="text-decoration-none text-inherit">
-                                       <span className="me-1 align-text-bottom">
-                                          <svg
-                                             xmlns="http://www.w3.org/2000/svg"
-                                             width="14"
-                                             height="14"
-                                             viewBox="0 0 24 24"
-                                             fill="none"
-                                             stroke="currentColor"
-                                             strokeWidth="2"
-                                             strokeLinecap="round"
-                                             strokeLinejoin="round"
-                                             className="feather feather-trash-2 text-success">
-                                             <polyline points="3 6 5 6 21 6"></polyline>
-                                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                             <line x1="10" y1="11" x2="10" y2="17"></line>
-                                             <line x1="14" y1="11" x2="14" y2="17"></line>
-                                          </svg>
-                                       </span>
-                                       <span className="text-muted">Remove</span>
-                                    </a>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
+                                 <div className="row align-items-center">
 
-                       
-                        <div className="col-4 col-md-3 col-lg-3">
-                         
-                           <div className="input-group input-spinner">
-                              <input type="button" defaultValue="-" className="button-minus btn btn-sm" data-field="quantity" />
-                              <input type="number" step="1" max="10" defaultValue="1" name="quantity" className="quantity-field form-control-sm form-input" />
-                              <input type="button" defaultValue="+" className="button-plus btn btn-sm" data-field="quantity" />
-                           </div>
-                        </div>
-                       
-                        <div className="col-2 text-lg-end text-start text-md-end col-md-2">
-                           <span className="fw-bold">$15.00</span>
-                           <div className="text-decoration-line-through text-muted small">$20.00</div>
-                        </div>
-                     </div>
-                  </li>
+                                    <div className="col-6 col-md-6 col-lg-7">
+
+                                       <div className="d-flex">
+
+                                          <img
+                                             src={item.thumbnail}
+                                             alt={item.name}
+                                             className="icon-shape icon-xxl"
+                                          />
+
+                                          <div className="ms-3">
+
+                                             <a
+                                                href="#!"
+                                                className="text-inherit"
+                                             >
+                                                <h6 className="mb-0">
+                                                   {item.name}
+                                                </h6>
+                                             </a>
+
+                                             <span>
+                                                <small className="text-muted">
+                                                   Qty: {item.qty}
+                                                </small>
+                                             </span>
+
+                                             <div className="mt-2 small lh-1">
+
+                                           <button
+   type="button"
+   className="btn btn-link text-decoration-none text-inherit p-0 border-0"
+   onClick={() =>
+      handleRemoveCart(item.product_id)
+   }
+>
+
+                                                   <span className="text-muted">
+                                                      Remove
+                                                   </span>
+
+                                                </button>
+
+                                             </div>
+
+                                          </div>
+
+                                       </div>
+
+                                    </div>
+
+                                    <div className="col-4 col-md-3 col-lg-3">
+
+                                       <div className="input-group input-spinner">
+
+                                     <input type="button"
+                                          value="-"
+                                          className="button-minus btn btn-sm"
+                                          onClick={() =>
+                                             handleQuantity(
+                                                item.product_id,
+                                                "decrease",
+                                                item.qty
+                                             )
+                                          }
+                                       />
+
+                                          <input
+                                             type="number"
+                                             step="1"
+                                             value={item.qty}
+                                             readOnly
+                                             className="quantity-field form-control-sm form-input"
+                                          />
+
+                                        <input
+                                             type="button"
+                                             value="+"
+                                             className="button-plus btn btn-sm"
+                                             onClick={() =>
+                                                handleQuantity(
+                                                   item.product_id,
+                                                   "increase",
+                                                   item.qty
+                                                )
+                                             }
+                                          />
+
+                                       </div>
+
+                                    </div>
+
+                                    <div className="col-2 text-lg-end text-start text-md-end col-md-2">
+
+                                       <span className="fw-bold">
+                                          Rs. {item.price}
+                                       </span>
+
+                                    </div>
+
+                                 </div>
+
+                              </li>
+
+                           ))
+
+                           
+                        }
+
+                        {
+   cartItems.length === 0 && (
+
+      <div className="text-center py-5">
+
+         <h6>
+            Cart is empty
+         </h6>
+
+      </div>
+
+   )
+}
                   
-                  <li className="list-group-item py-3 ps-0 border-bottom">
-                     
-                     <div className="row align-items-center">
-                        <div className="col-6 col-md-6 col-lg-7">
-                           <div className="d-flex">
-                              <img src="assets/images/products/product-img-5.jpg" alt="Ecommerce" className="icon-shape icon-xxl" />
-                              <div className="ms-3">
-                                 
-                                 <a href="pages/shop-single.html" className="text-inherit">
-                                    <h6 className="mb-0">Salted Instant Popcorn</h6>
-                                 </a>
-                                 <span><small className="text-muted">100g</small></span>
-                                
-                                 <div className="mt-2 small lh-1">
-                                    <a href="#!" className="text-decoration-none text-inherit">
-                                       <span className="me-1 align-text-bottom">
-                                          <svg
-                                             xmlns="http://www.w3.org/2000/svg"
-                                             width="14"
-                                             height="14"
-                                             viewBox="0 0 24 24"
-                                             fill="none"
-                                             stroke="currentColor"
-                                             strokeWidth="2"
-                                             strokeLinecap="round"
-                                             strokeLinejoin="round"
-                                             className="feather feather-trash-2 text-success">
-                                             <polyline points="3 6 5 6 21 6"></polyline>
-                                             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                             <line x1="10" y1="11" x2="10" y2="17"></line>
-                                             <line x1="14" y1="11" x2="14" y2="17"></line>
-                                          </svg>
-                                       </span>
-                                       <span className="text-muted">Remove</span>
-                                    </a>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-
-                       
-                        <div className="col-4 col-md-3 col-lg-3">
-                         
-                           <div className="input-group input-spinner">
-                              <input type="button" defaultValue="-" className="button-minus btn btn-sm" data-field="quantity" />
-                              <input type="number" step="1" max="10" defaultValue="1" name="quantity" className="quantity-field form-control-sm form-input" />
-                              <input type="button" defaultValue="+" className="button-plus btn btn-sm" data-field="quantity" />
-                           </div>
-                        </div>
-                       
-                        <div className="col-2 text-lg-end text-start text-md-end col-md-2">
-                           <span className="fw-bold">$15.00</span>
-                           <div className="text-decoration-line-through text-muted small">$25.00</div>
-                        </div>
-                     </div>
-                  </li>
                </ul>
                
                <div className="d-flex justify-content-between mt-4">

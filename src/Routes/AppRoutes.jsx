@@ -22,7 +22,7 @@ const AppRoutes = ()=>{
             <Route path="/Cart" element={<Cart/>}></Route>
             <Route path="/Checkout" element={<Checkout/>}></Route>
             <Route path="*" element={<Notfound/>}></Route>
-            <Route path="productSingle/:id" element={<ProductSingle/>}></Route>
+            <Route path="productSingle/:category_id/:id" element={<ProductSingle/>}></Route>
             <Route path="/Signin" element={<Signin/>}></Route>
             <Route path="/Signup" element={<Signup/>}></Route>
             <Route path="/MyWishlist" element={<Wishlist/>}></Route>

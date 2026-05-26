@@ -8,3 +8,22 @@ export const productBycategory = async ( id,page = 1,sort = "latest",limit = 12)
       console.log(error)  
     }
 }
+
+export const productSingle = async (id)=>{
+    try {
+        const res = await api.get(`product/getProductDetails.php?id=${id}`);
+        return res.data;
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export const getAllProducts = async ()=>{
+    try {
+        const res = await api.get(`product/getProducts.php`);
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}

@@ -14,12 +14,19 @@ import './assets/css/theme.min.css';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import CategoryProvider from './context/CategoryContext.jsx';
+import { BrowserRouter } from 'react-router-dom';
+import ScrollToTop from './components/ScrollToTop';
+import { CartProvider } from './context/CartContext.jsx';
 
 createRoot(document.getElementById('root')).render(
-
+<BrowserRouter>
+<ScrollToTop/>
   <StrictMode>
     <CategoryProvider>
+      <CartProvider>
     <App />
+    </CartProvider>
     </CategoryProvider>
   </StrictMode>
+  </BrowserRouter>
 )

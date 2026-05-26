@@ -3,9 +3,13 @@ import Header from "../components/Header"
 import Hero from "../components/Hero"
 import groceryBanner from "../assets/images/banner/grocery-banner.png";
 import grocery from "../assets/images/banner/grocery-banner-2.jpg";
-import Popularproduct from "../components/PopularProducts";
+
 import Footer from "../components/Footer";
+import ThreeCategoryProduct from "../components/ThreeCategoryProducts";
 const Home = ()=>{
+
+   /* ================= GROUPED PRODUCT ================== */
+   
     return(
         <>
         <Header/>
@@ -60,7 +64,9 @@ const Home = ()=>{
          </section>
 
 
-         <Popularproduct/>
+        
+
+         <ThreeCategoryProduct/>
          <Footer/>
         </>
     )

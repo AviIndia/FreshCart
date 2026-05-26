@@ -443,12 +443,12 @@ const handleLimitChange = (e) => {
 
           {/* product name */}
           <h2 className="fs-6">
-            <a
-              href="shop-single.html"
+            <NavLink
+              to={`/productSingle/${id}/${item.id}`}
               className="text-inherit text-decoration-none"
             >
               {item.name}
-            </a>
+            </NavLink>
           </h2>
 
           {/* rating */}
