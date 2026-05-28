@@ -1,427 +1,518 @@
 import Footer from "../components/Footer"
 import Header from "../components/Header"
+import { useContext, useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+import { CategoryContext } from '../context/CategoryContext';
+import { getCartItems } from '../services/cart';
+import { useCart } from '../context/CartContext';
+import { updateCart } from "../services/cart";
+import { updateGuestCartQty } from "../utils/cartHelper";
+import { removeCartItem } from "../services/cart";
+import { removeGuestCartItem } from "../utils/cartHelper";
+const Cart = () => {
 
-const Cart = ()=>{
-    return(
-    <>
-    <Header/>
+   const navigate = useNavigate();
+   const { cartItems, setCartItems, cartCount, setCartCount } = useCart();
+   const { categories } = useContext(CategoryContext);
+
+   const loadCartCount = async () => {
+
+   const token = localStorage.getItem("token");
+
+   if (token) {
+
+      try {
+
+         const res = await getCartItems();
+
+         if (res.status) {
+
+            console.log(res.data.items.length)
+             //setCartItems(res.data.items || []);
+            setCartCount(res.data.items.length || 0);
+
+         }
+
+      } catch (error) {
+
+         console.log(error);
+
+      }
+
+   } else {
+
+      const guestCart = JSON.parse(localStorage.getItem("guest_cart")) || [];
+
+      setCartCount(guestCart.length);
+      console.log(guestCart.length)
+
+   }
+
+}
+
+     /* ============ LOAD CART ITEMS =============== */
+const loadCartItems = async () => {
+
+   const token = localStorage.getItem("token");
+
+   if (token) {
+
+      try {
+
+         const res = await getCartItems();
+
+         if (res.status) {
+
+            setCartItems(res.data.items || []);
+            setCartCount(res.data.items.length || 0);
+
+         }
+
+      } catch (error) {
+
+         console.log(error);
+
+      }
+
+   } else {
+
+      const guestCart =
+         JSON.parse(localStorage.getItem("guest_cart")) || [];
+
+      setCartItems(guestCart);
+      setCartCount(guestCart.length);
+
+   }
+
+};
+
+
+
+
+   useEffect(() => {
+
+      loadCartCount(); loadCartItems();
+
+   }, []);
+
+
+     /* =================== CART QTY HANDLE ============== */
+const handleQuantity = async (item, type) => {
+console.log(item)
+   const token = localStorage.getItem("token");
+
+   // LOGIN USER
+   if (token) {
+
+      try {
+
+         let qty =
+            type === "increase"
+               ? item.quantity + 1
+               : item.quantity - 1;
+
+         if (qty < 1) qty = 1;
+
+         const payload = {
+            cart_id: item.cart_id,
+            quantity: qty
+         };
+
+         console.log(payload);
+
+         const res = await updateCart(payload);
+
+         console.log(res);
+
+         if (res.status) {
+
+            await loadCartItems();
+
+         }
+
+      } catch (error) {
+
+         console.log(error);
+
+      }
+
+   }
+
+   // GUEST USER
+   else {
+
+      const updatedCart =
+         updateGuestCartQty(item.product_id, type);
+
+      setCartItems(updatedCart);
+
+      setCartCount(updatedCart.length);
+
+   }
+
+}
+
+const handleRemoveCart = async (item) => {
+
+   const token = localStorage.getItem("token");
+   console.log("Item fetched ", item)
+   // LOGIN USER
+   if (token) {
+
+      try {
+
+         const payload = { cart_id: item.cart_id };
+         console.log(payload)
+         const res = await removeCartItem(payload);
+
+         if (res.status) {
+
+            await loadCartItems();
+
+         }
+
+      } catch (error) {
+
+         console.log(error);
+
+      }
+
+   }
+
+   // GUEST USER
+   else {
+
+      removeGuestCartItem(
+         item.product_id
+      );
+
+      loadCartItems();
+
+   }
+
+};
+
+   /* ================= CART SUMMARY ================= */
+
+/* ================= CART SUMMARY ================= */
+
+const itemSubtotal = cartItems.reduce(
+   (total, item) =>
+      total +
+      (Number(item.final_price || item.price) *
+         Number(item.quantity)),
+   0
+);
+
+// DELIVERY FEE
+let deliveryFee = 0;
+
+if (cartItems.length > 0 && itemSubtotal < 200) {
+
+   deliveryFee = 50;
+
+}
+
+const grandTotal = itemSubtotal + deliveryFee;
+
+   const handleCheckout = () => {
+
+      const token = localStorage.getItem("token");
+
+      // LOGIN NA THAKLE
+      if (!token) {
+
+         navigate("/Signin");
+
+         return;
+
+      }
+
+      // LOGIN THAKLE
+      navigate("/checkout");
+
+   };
+   return (
+      <>
+         <Header />
          <main>
-           {/*  section*/}
-         <div class="mt-4">
-            <div class="container">
-                 {/*  row */}
-               <div class="row">
-                    {/*  col */}
-                  <div class="col-12">
-                       {/*  breadcrumb */}
-                     <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0">
-                           <li class="breadcrumb-item"><a href="#!">Home</a></li>
-                           <li class="breadcrumb-item"><a href="#!">Shop</a></li>
-                           <li class="breadcrumb-item active" aria-current="page">Shop Cart</li>
-                        </ol>
-                     </nav>
-                  </div>
-               </div>
-            </div>
-         </div>
-           {/*  section */}
-         <section class="mb-lg-14 mb-8 mt-8">
-            <div class="container">
-                 {/*  row */}
-               <div class="row">
-                  <div class="col-12">
-                       {/*  card */}
-                     <div class="card py-1 border-0 mb-8">
-                        <div>
-                           <h1 class="fw-bold">Shop Cart</h1>
-                           <p class="mb-0">Shopping in 382480</p>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-                 {/*  row */}
-               <div class="row">
-                  <div class="col-lg-8 col-md-7">
-                     <div class="py-3">
-                          {/*  alert */}
-                        <div class="alert alert-danger p-2" role="alert">
-                           You’ve got FREE delivery. Start
-                           <a href="#!" class="alert-link">checkout now!</a>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                             {/*  list group */}
-                           <li class="list-group-item py-3 ps-0 border-top">
-                                {/*  row */}
-                              <div class="row align-items-center">
-                                 <div class="col-6 col-md-6 col-lg-7">
-                                    <div class="d-flex">
-                                       <img src="../assets/images/products/product-img-1.jpg" alt="Ecommerce" class="icon-shape icon-xxl" />
-                                       <div class="ms-3">
-                                            {/*  title */}
-                                          <a href="shop-single.html" class="text-inherit">
-                                             <h6 class="mb-0">Haldiram's Sev Bhujia</h6>
-                                          </a>
-                                          <span><small class="text-muted">.98 / lb</small></span>
-                                            {/*  text */}
-                                          <div class="mt-2 small lh-1">
-                                             <a href="#!" class="text-decoration-none text-inherit">
-                                                <span class="me-1 align-text-bottom">
-                                                   <svg
-                                                      xmlns="http://www.w3.org/2000/svg"
-                                                      width="14"
-                                                      height="14"
-                                                      viewBox="0 0 24 24"
-                                                      fill="none"
-                                                      stroke="currentColor"
-                                                      stroke-width="2"
-                                                      stroke-linecap="round"
-                                                      stroke-linejoin="round"
-                                                      class="feather feather-trash-2 text-success">
-                                                      <polyline points="3 6 5 6 21 6"></polyline>
-                                                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                      <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                      <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                   </svg>
-                                                </span>
-                                                <span class="text-muted">Remove</span>
-                                             </a>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                   {/*  input group */}
-                                 <div class="col-4 col-md-4 col-lg-3">
-                                      {/*  input */}
-                                      {/*  input */}
-                                    <div class="input-group input-spinner">
-                                       <input type="button" value="-" class="button-minus btn btn-sm" data-field="quantity" />
-                                       <input type="number" step="1" max="10" value="1" name="quantity" class="quantity-field form-control-sm form-input" />
-                                       <input type="button" value="+" class="button-plus btn btn-sm" data-field="quantity" />
-                                    </div>
-                                 </div>
-                                   {/*  price */}
-                                 <div class="col-2 text-lg-end text-start text-md-end col-md-2">
-                                    <span class="fw-bold">$5.00</span>
-                                 </div>
-                              </div>
-                           </li>
-                             {/*  list group */}
-                           <li class="list-group-item py-3 ps-0">
-                                {/*  row */}
-                              <div class="row align-items-center">
-                                 <div class="col-6 col-md-6 col-lg-7">
-                                    <div class="d-flex">
-                                       <img src="../assets/images/products/product-img-2.jpg" alt="Ecommerce" class="icon-shape icon-xxl" />
-                                       <div class="ms-3">
-                                          <a href="shop-single.html" class="text-inherit">
-                                             <h6 class="mb-0">NutriChoice Digestive</h6>
-                                          </a>
-                                          <span><small class="text-muted">250g</small></span>
-                                            {/*  text */}
-                                          <div class="mt-2 small lh-1">
-                                             <a href="#!" class="text-decoration-none text-inherit">
-                                                <span class="me-1 align-text-bottom">
-                                                   <svg
-                                                      xmlns="http://www.w3.org/2000/svg"
-                                                      width="14"
-                                                      height="14"
-                                                      viewBox="0 0 24 24"
-                                                      fill="none"
-                                                      stroke="currentColor"
-                                                      stroke-width="2"
-                                                      stroke-linecap="round"
-                                                      stroke-linejoin="round"
-                                                      class="feather feather-trash-2 text-success">
-                                                      <polyline points="3 6 5 6 21 6"></polyline>
-                                                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                      <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                      <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                   </svg>
-                                                </span>
-                                                <span class="text-muted">Remove</span>
-                                             </a>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-
-                                   {/*  input group */}
-                                 <div class="col-4 col-md-4 col-lg-3">
-                                      {/*  input */}
-                                      {/*  input */}
-                                    <div class="input-group input-spinner">
-                                       <input type="button" value="-" class="button-minus btn btn-sm" data-field="quantity" />
-                                       <input type="number" step="1" max="10" value="1" name="quantity" class="quantity-field form-control-sm form-input" />
-                                       <input type="button" value="+" class="button-plus btn btn-sm" data-field="quantity" />
-                                    </div>
-                                 </div>
-                                   {/*  price */}
-                                 <div class="col-2 text-lg-end text-start text-md-end col-md-2">
-                                    <span class="fw-bold text-danger">$20.00</span>
-                                    <div class="text-decoration-line-through text-muted small">$26.00</div>
-                                 </div>
-                              </div>
-                           </li>
-                             {/*  list group */}
-                           <li class="list-group-item py-3 ps-0">
-                                {/*  row */}
-                              <div class="row align-items-center">
-                                 <div class="col-6 col-md-6 col-lg-7">
-                                    <div class="d-flex">
-                                       <img src="../assets/images/products/product-img-3.jpg" alt="Ecommerce" class="icon-shape icon-xxl" />
-                                       <div class="ms-3">
-                                            {/*  title */}
-                                          <a href="shop-single.html" class="text-inherit">
-                                             <h6 class="mb-0">Cadbury 5 Star Chocolate</h6>
-                                          </a>
-                                          <span><small class="text-muted">1 kg</small></span>
-                                            {/*  text */}
-                                          <div class="mt-2 small lh-1">
-                                             <a href="#!" class="text-decoration-none text-inherit">
-                                                <span class="me-1 align-text-bottom">
-                                                   <svg
-                                                      xmlns="http://www.w3.org/2000/svg"
-                                                      width="14"
-                                                      height="14"
-                                                      viewBox="0 0 24 24"
-                                                      fill="none"
-                                                      stroke="currentColor"
-                                                      stroke-width="2"
-                                                      stroke-linecap="round"
-                                                      stroke-linejoin="round"
-                                                      class="feather feather-trash-2 text-success">
-                                                      <polyline points="3 6 5 6 21 6"></polyline>
-                                                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                      <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                      <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                   </svg>
-                                                </span>
-                                                <span class="text-muted">Remove</span>
-                                             </a>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-
-                                   {/*  input group */}
-                                 <div class="col-4 col-md-4 col-lg-3">
-                                      {/*  input */}
-                                      {/*  input */}
-                                    <div class="input-group input-spinner">
-                                       <input type="button" value="-" class="button-minus btn btn-sm" data-field="quantity" />
-                                       <input type="number" step="1" max="10" value="1" name="quantity" class="quantity-field form-control-sm form-input" />
-                                       <input type="button" value="+" class="button-plus btn btn-sm" data-field="quantity" />
-                                    </div>
-                                 </div>
-                                   {/*  price */}
-                                 <div class="col-2 text-lg-end text-start text-md-end col-md-2">
-                                    <span class="fw-bold">$15.00</span>
-                                    <div class="text-decoration-line-through text-muted small">$20.00</div>
-                                 </div>
-                              </div>
-                           </li>
-                             {/*  list group */}
-                           <li class="list-group-item py-3 ps-0">
-                                {/*  row */}
-                              <div class="row align-items-center">
-                                 <div class="col-6 col-md-6 col-lg-7">
-                                    <div class="d-flex">
-                                       <img src="../assets/images/products/product-img-4.jpg" alt="Ecommerce" class="icon-shape icon-xxl" />
-                                       <div class="ms-3">
-                                            {/*  title */}
-                                            {/*  title */}
-                                          <a href="shop-single.html" class="text-inherit">
-                                             <h6 class="mb-0">Onion Flavour Potato</h6>
-                                          </a>
-                                          <span><small class="text-muted">250g</small></span>
-                                            {/*  text */}
-                                          <div class="mt-2 small lh-1">
-                                             <a href="#!" class="text-decoration-none text-inherit">
-                                                <span class="me-1 align-text-bottom">
-                                                   <svg
-                                                      xmlns="http://www.w3.org/2000/svg"
-                                                      width="14"
-                                                      height="14"
-                                                      viewBox="0 0 24 24"
-                                                      fill="none"
-                                                      stroke="currentColor"
-                                                      stroke-width="2"
-                                                      stroke-linecap="round"
-                                                      stroke-linejoin="round"
-                                                      class="feather feather-trash-2 text-success">
-                                                      <polyline points="3 6 5 6 21 6"></polyline>
-                                                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                      <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                      <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                   </svg>
-                                                </span>
-                                                <span class="text-muted">Remove</span>
-                                             </a>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-
-                                   {/*  input group */}
-                                 <div class="col-4 col-md-4 col-lg-3">
-                                      {/*  input */}
-                                      {/*  input */}
-                                    <div class="input-group input-spinner">
-                                       <input type="button" value="-" class="button-minus btn btn-sm" data-field="quantity" />
-                                       <input type="number" step="1" max="10" value="1" name="quantity" class="quantity-field form-control-sm form-input" />
-                                       <input type="button" value="+" class="button-plus btn btn-sm" data-field="quantity" />
-                                    </div>
-                                 </div>
-                                   {/*  price */}
-                                 <div class="col-2 text-lg-end text-start text-md-end col-md-2">
-                                    <span class="fw-bold">$15.00</span>
-                                    <div class="text-decoration-line-through text-muted small">$20.00</div>
-                                 </div>
-                              </div>
-                           </li>
-                             {/*  list group */}
-                           <li class="list-group-item py-3 ps-0 border-bottom">
-                                {/*  row */}
-                              <div class="row align-items-center">
-                                 <div class="col-6 col-md-6 col-lg-7">
-                                    <div class="d-flex">
-                                       <img src="../assets/images/products/product-img-5.jpg" alt="Ecommerce" class="icon-shape icon-xxl" />
-                                       <div class="ms-3">
-                                            {/*  title */}
-                                          <a href="shop-single.html" class="text-inherit">
-                                             <h6 class="mb-0">Salted Instant Popcorn</h6>
-                                          </a>
-                                          <span><small class="text-muted">100g</small></span>
-                                            {/*  text */}
-                                          <div class="mt-2 small lh-1">
-                                             <a href="#!" class="text-decoration-none text-inherit">
-                                                <span class="me-1 align-text-bottom">
-                                                   <svg
-                                                      xmlns="http://www.w3.org/2000/svg"
-                                                      width="14"
-                                                      height="14"
-                                                      viewBox="0 0 24 24"
-                                                      fill="none"
-                                                      stroke="currentColor"
-                                                      stroke-width="2"
-                                                      stroke-linecap="round"
-                                                      stroke-linejoin="round"
-                                                      class="feather feather-trash-2 text-success">
-                                                      <polyline points="3 6 5 6 21 6"></polyline>
-                                                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                                      <line x1="10" y1="11" x2="10" y2="17"></line>
-                                                      <line x1="14" y1="11" x2="14" y2="17"></line>
-                                                   </svg>
-                                                </span>
-                                                <span class="text-muted">Remove</span>
-                                             </a>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-
-                                   {/*  input group */}
-                                 <div class="col-4 col-md-4 col-lg-3">
-                                      {/*  input */}
-                                      {/*  input */}
-                                    <div class="input-group input-spinner">
-                                       <input type="button" value="-" class="button-minus btn btn-sm" data-field="quantity" />
-                                       <input type="number" step="1" max="10" value="1" name="quantity" class="quantity-field form-control-sm form-input" />
-                                       <input type="button" value="+" class="button-plus btn btn-sm" data-field="quantity" />
-                                    </div>
-                                 </div>
-                                   {/*  price */}
-                                 <div class="col-2 text-lg-end text-start text-md-end col-md-2">
-                                    <span class="fw-bold">$15.00</span>
-                                    <div class="text-decoration-line-through text-muted small">$25.00</div>
-                                 </div>
-                              </div>
-                           </li>
-                        </ul>
-                          {/*  btn */}
-                        <div class="d-flex justify-content-between mt-4">
-                           <a href="#!" class="btn btn-primary">Continue Shopping</a>
-                           <a href="#!" class="btn btn-dark">Update Cart</a>
-                        </div>
-                     </div>
-                  </div>
-
-                    {/*  sidebar */}
-                  <div class="col-12 col-lg-4 col-md-5">
-                       {/*  card */}
-                     <div class="mb-5 card mt-6">
-                        <div class="card-body p-6">
-                             {/*  heading */}
-                           <h2 class="h5 mb-4">Summary</h2>
-                           <div class="card mb-2">
-                                {/*  list group */}
-                              <ul class="list-group list-group-flush">
-                                   {/*  list group item */}
-                                 <li class="list-group-item d-flex justify-content-between align-items-start">
-                                    <div class="me-auto">
-                                       <div>Item Subtotal</div>
-                                    </div>
-                                    <span>$70.00</span>
-                                 </li>
-
-                                   {/*  list group item */}
-                                 <li class="list-group-item d-flex justify-content-between align-items-start">
-                                    <div class="me-auto">
-                                       <div>Service Fee</div>
-                                    </div>
-                                    <span>$3.00</span>
-                                 </li>
-                                   {/*  list group item */}
-                                 <li class="list-group-item d-flex justify-content-between align-items-start">
-                                    <div class="me-auto">
-                                       <div class="fw-bold">Subtotal</div>
-                                    </div>
-                                    <span class="fw-bold">$67.00</span>
-                                 </li>
-                              </ul>
-                           </div>
-                           <div class="d-grid mb-1 mt-4">
-                                {/*  btn */}
-                              <button class="btn btn-primary btn-lg d-flex justify-content-between align-items-center" type="submit">
-                                 Go to Checkout
-                                 <span class="fw-bold">$67.00</span>
-                              </button>
-                           </div>
-                             {/*  text */}
-                           <p>
-                              <small>
-                                 By placing your order, you agree to be bound by the Freshcart
-                                 <a href="#!">Terms of Service</a>
-                                 and
-                                 <a href="#!">Privacy Policy.</a>
-                              </small>
-                           </p>
-
-                             {/*  heading */}
-                           <div class="mt-8">
-                              <h2 class="h5 mb-3">Add Promo or Gift Card</h2>
-                              <form>
-                                 <div class="mb-2">
-                                      {/*  input */}
-                                    <label for="giftcard" class="form-label sr-only">Email address</label>
-                                    <input type="text" class="form-control" id="giftcard" placeholder="Promo or Gift Card" />
-                                 </div>
-                                   {/*  btn */}
-                                 <div class="d-grid"><button type="submit" class="btn btn-outline-dark mb-1">Redeem</button></div>
-                                 <p class="text-muted mb-0"><small>Terms & Conditions apply</small></p>
-                              {/*  */}
-                              </form>
-                           </div>
-                        </div>
+            {/*  section*/}
+            <div className="mt-4">
+               <div className="container">
+                  {/*  row */}
+                  <div className="row">
+                     {/*  col */}
+                     <div className="col-12">
+                        {/*  breadcrumb */}
+                        <nav aria-label="breadcrumb">
+                           <ol className="breadcrumb mb-0">
+                              <li className="breadcrumb-item"><a href="#!">Home</a></li>
+                              <li className="breadcrumb-item"><a href="#!">Shop</a></li>
+                              <li className="breadcrumb-item active" aria-current="page">Shop Cart</li>
+                           </ol>
+                        </nav>
                      </div>
                   </div>
                </div>
             </div>
-         </section>
-      </main>
-      <Footer/>
-    </>
-    )
+            {/*  section */}
+            <section className="mb-lg-14 mb-8 mt-8">
+               <div className="container">
+                  {/*  row */}
+                  <div className="row">
+                     <div className="col-12">
+                        {/*  card */}
+                        <div className="card py-1 border-0 mb-8">
+                           <div>
+                              <h1 className="fw-bold">Shop Cart</h1>
+                              <p className="mb-0">Shopping in 382480</p>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  {/*  row */}
+                  <div className="row">
+                     <div className="col-lg-8 col-md-7">
+                        <div className="py-3">
+                           {/*  alert */}
+                           <div className="alert alert-danger p-2" role="alert">
+                              You’ve got FREE delivery. Start
+                              <a href="#!" className="alert-link">checkout now!</a>
+                           </div>
+                           <ul className="list-group list-group-flush">
+
+                              {Array.isArray(cartItems) &&
+                                 cartItems.map((item, index) => (
+
+                                    <li
+                                       className="list-group-item py-3 ps-0 border-top"
+                                       key={index}
+                                    >
+
+                                       <div className="row align-items-center">
+
+                                          <div className="col-6 col-md-6 col-lg-7">
+
+                                             <div className="d-flex">
+
+                                                <img
+                                                   src={item.thumbnail}
+                                                   alt={item.name}
+                                                   className="icon-shape icon-xxl"
+                                                />
+
+                                                <div className="ms-3">
+
+                                                   <a
+                                                      href="#!"
+                                                      className="text-inherit"
+                                                   >
+                                                      <h6 className="mb-0">
+                                                         {item.name}
+                                                      </h6>
+                                                   </a>
+
+                                                   <span>
+                                                      <small className="text-muted">
+                                                         Qty: {item.qty}
+                                                      </small>
+                                                   </span>
+
+                                                   <div className="mt-2 small lh-1">
+
+                                                      <button
+                                                         type="button"
+                                                         className="btn btn-link text-decoration-none text-inherit p-0 border-0"
+                                                          onClick={() =>handleRemoveCart(item)}
+                                                      >
+
+                                                         <span className="text-muted">
+                                                            Remove
+                                                         </span>
+
+                                                      </button>
+
+                                                   </div>
+
+                                                </div>
+
+                                             </div>
+
+                                          </div>
+
+                                          <div className="col-4 col-md-3 col-lg-3">
+
+                                             <div className="input-group input-spinner">
+
+                                                <input type="button"
+                                                   value="-"
+                                                   className="button-minus btn btn-sm"
+                                                  onClick={() => handleQuantity(item, "decrease")}
+                                                />
+
+                                                <input
+                                                   type="number"
+                                                   step="1"
+                                                   value={item.quantity}
+                                                   readOnly
+                                                   className="quantity-field form-control-sm form-input"
+                                                />
+
+                                                <input
+                                                   type="button"
+                                                   value="+"
+                                                   className="button-plus btn btn-sm"
+                                                  onClick={() => handleQuantity(item, "increase")
+                                             }
+                                                />
+
+                                             </div>
+
+                                          </div>
+
+                                          <div className="col-2 text-lg-end text-start text-md-end col-md-2">
+
+                                             <span className="fw-bold">
+                                                Rs.{item.price * item.quantity}
+                                             </span>
+
+                                          </div>
+
+                                       </div>
+
+                                    </li>
+
+                                 ))
+
+
+                              }
+
+                              {Array.isArray(cartItems) &&
+                                 cartItems.length === 0 && (
+
+                                    <div className="text-center py-5">
+
+                                       <h6>
+                                          Cart is empty
+                                       </h6>
+
+                                    </div>
+
+                                 )
+                              }
+
+                           </ul>
+                           {/*  btn */}
+                           <div className="d-flex justify-content-between mt-4">
+                              <a href="#!" className="btn btn-primary">Continue Shopping</a>
+                              <a href="#!" className="btn btn-dark">Update Cart</a>
+                           </div>
+                        </div>
+                     </div>
+
+                     {/*  sidebar */}
+                     <div className="col-12 col-lg-4 col-md-5">
+                        {/*  card */}
+                        <div className="mb-5 card mt-6">
+                           <div className="card-body p-6">
+                              {/*  heading */}
+                              <h2 className="h5 mb-4">Summary</h2>
+                              <div className="card mb-2">
+
+                                 <ul className="list-group list-group-flush">
+
+                                    {/* ITEM SUBTOTAL */}
+                                    <li className="list-group-item d-flex justify-content-between align-items-start">
+
+                                       <div className="me-auto">
+                                          <div>Item Subtotal</div>
+                                       </div>
+
+                                       <span>
+                                          Rs.{itemSubtotal}
+                                       </span>
+
+                                    </li>
+
+                                    {/* DELIVERY FEE */}
+                                    <li className="list-group-item d-flex justify-content-between align-items-start">
+
+                                       <div className="me-auto">
+                                          <div>Delivery Fee</div>
+                                       </div>
+
+                                       <span>
+                                          Rs.{deliveryFee}
+                                       </span>
+
+                                    </li>
+
+                                    {/* TOTAL */}
+                                    <li className="list-group-item d-flex justify-content-between align-items-start">
+
+                                       <div className="me-auto">
+                                          <div className="fw-bold">
+                                             Total
+                                          </div>
+                                       </div>
+
+                                       <span className="fw-bold">
+                                          Rs.{grandTotal}
+                                       </span>
+
+                                    </li>
+
+                                 </ul>
+
+                              </div>
+                              <div className="d-grid mb-1 mt-4">
+                                 {/*  btn */}
+                                 <button
+                                    className={`btn w-100 ${
+                                       cartItems.length === 0
+                                          ? "btn-secondary"
+                                          : "btn-primary"
+                                    }`}
+                                    onClick={handleCheckout}
+                                    disabled={cartItems.length === 0}
+                                 >
+                                    Checkout
+                                 </button>
+                              </div>
+                              {/*  text */}
+                              <p>
+                                 <small>
+                                    By placing your order, you agree to be bound by the Freshcart
+                                    <a href="#!">Terms of Service</a>
+                                    and
+                                    <a href="#!">Privacy Policy.</a>
+                                 </small>
+                              </p>
+
+                              {/*  heading */}
+                              {/*  <div className="mt-8">
+                                 <h2 className="h5 mb-3">Add Promo or Gift Card</h2>
+                                 <form>
+                                    <div className="mb-2">
+                                     
+                                       <label for="giftcard" className="form-label sr-only">Email address</label>
+                                       <input type="text" className="form-control" id="giftcard" placeholder="Promo or Gift Card" />
+                                    </div>
+                                    
+                                    <div className="d-grid"><button type="submit" className="btn btn-outline-dark mb-1">Redeem</button></div>
+                                    <p className="text-muted mb-0"><small>Terms & Conditions apply</small></p>
+                                   
+                                 </form>
+                              </div> */}
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </section>
+         </main>
+         <Footer />
+      </>
+   )
 }
 export default Cart

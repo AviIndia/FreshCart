@@ -8,46 +8,54 @@ export const CartProvider = ({ children }) => {
    const [cartItems, setCartItems] = useState([]);
    const [cartCount, setCartCount] = useState(0);
 
-   const loadCartItems = async () => {
+const loadCartItems = async () => {
 
-      const token = localStorage.getItem("token");
+   const token = localStorage.getItem("token");
 
-      // LOGIN USER
-      if (token) {
+   // LOGIN USER
+   if (token) {
 
-         try {
+      try {
 
-            const res = await getCartItems();
+         const res = await getCartItems();
 
-            if (res.status) {
+         if (res.status) {
 
-               setCartItems(res.data);
+            const normalizedItems =
+               (res.data.items || []).map((item) => ({
+                  ...item,
+                  qty: item.quantity
+               }));
 
-               setCartCount(res.data.length);
+            setCartItems(normalizedItems);
 
-            }
-
-         } catch (error) {
-
-            console.log(error);
+            setCartCount(
+               res.data.summary.total_items || 0
+            );
 
          }
 
-      }
+      } catch (error) {
 
-      // GUEST USER
-      else {
-
-         const guestCart =
-            JSON.parse(localStorage.getItem("guest_cart")) || [];
-
-         setCartItems(guestCart);
-
-         setCartCount(guestCart.length);
+         console.log(error);
 
       }
 
-   };
+   }
+
+   // GUEST USER
+   else {
+
+      const guestCart =
+         JSON.parse(localStorage.getItem("guest_cart")) || [];
+
+      setCartItems(guestCart);
+
+      setCartCount(guestCart.length);
+
+   }
+
+};
 
    useEffect(() => {
 

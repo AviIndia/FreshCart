@@ -15,6 +15,7 @@ import { useCart } from "../context/CartContext";
 
 const ProductSingle = () => {
    const { category_id, id } = useParams();
+   const [qty, setQty] = useState(1);
   const {
    cartCount,
    setCartCount,setCartItems,
@@ -45,23 +46,21 @@ const handleAddToCart = async (product) => {
 
    const token = localStorage.getItem("token");
 
-   // LOGIN USER
+   // LOGGED USER
    if (token) {
 
       try {
 
          const payload = {
             product_id: product.id,
-            qty: 1
+            qty: qty
          };
 
          const res = await addCart(payload);
 
          if (res.status) {
 
-            //setCartCount(prev => prev + 1);
-
-            await loadCartItems()
+            await loadCartItems();
 
             alert("Product added to cart");
 
@@ -76,20 +75,22 @@ const handleAddToCart = async (product) => {
    }
 
    // GUEST USER
-else {
+   else {
 
-   const updatedCart = addToGuestCart(product);
+      const updatedCart = addToGuestCart({
+         ...product,
+         qty
+      });
 
-   setCartItems(updatedCart);
+      setCartItems(updatedCart);
 
-   setCartCount(updatedCart.length);
+      setCartCount(updatedCart.length);
 
-   alert("Added to cart");
+      alert("Added to cart");
 
-}
+   }
 
 };
-
 
    return (
       <div>
@@ -248,25 +249,29 @@ else {
                            <div className="input-group input-spinner">
 
                               <input
-                                 type="button"
-                                 value="-"
-                                 className="button-minus btn btn-sm"
-                              />
+                                       type="button"
+                                       value="-"
+                                       className="button-minus btn btn-sm"
+                                       onClick={() => {
+                                          if (qty > 1) {
+                                             setQty(qty - 1);
+                                          }
+                                       }}
+                                    />
 
-                              <input
-                                 type="number"
-                                 step="1"
-                                 max="10"
-                                 value="1"
-                                 readOnly
-                                 className="quantity-field form-control-sm form-input"
-                              />
+                                    <input
+                                       type="number"
+                                       value={qty}
+                                       readOnly
+                                       className="quantity-field form-control-sm form-input"
+                                    />
 
-                              <input
-                                 type="button"
-                                 value="+"
-                                 className="button-plus btn btn-sm"
-                              />
+                                    <input
+                                       type="button"
+                                       value="+"
+                                       className="button-plus btn btn-sm"
+                                       onClick={() => setQty(qty + 1)}
+                                    />
 
                            </div>
                         </div>
@@ -967,13 +972,17 @@ else {
                         {/* price */}
                         <div className="d-flex justify-content-between align-items-center mt-3">
                            <div>
-                              <span className="text-dark">
-                                 Rs.{item.price}
-                              </span>
-
-                              <span className="text-decoration-line-through text-muted ms-2">
+                             <span className="text-dark">
                                  Rs.{item.final_price}
                               </span>
+
+                              {
+                                 item.discount_percent > 0 && (
+                                    <span className="text-decoration-line-through text-muted ms-2">
+                                       Rs.{item.price}
+                                    </span>
+                                 )
+                              }
                            </div>
 
                            <div>

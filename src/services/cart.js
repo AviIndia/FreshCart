@@ -29,15 +29,15 @@ export const getCartItems = async ()=>{
             }
         }
     );
-    return res.data
+    return res.data;
+    
 }
 
 export const updateCart = async (payload) => {
 
    const token = localStorage.getItem("token");
 
-   const res = await api.post(
-      "/cart/updateCart.php",
+   const res = await api.post("/cart/updateCart.php",
       payload,
       {
          headers: {
@@ -50,11 +50,11 @@ export const updateCart = async (payload) => {
 
 };
 
-export const removeCartItem = async (product_id) => {
+export const removeCartItem = async (payload) => {
 
    const token = localStorage.getItem("token");
 
-   const res = await api.post("/cart/removeCart.php",{ product_id },
+   const res = await api.post("/cart/removeCart.php",payload,
       {
          headers: {
             Authorization: `Bearer ${token}`

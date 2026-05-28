@@ -9,13 +9,13 @@ export const addToGuestCart = (product) => {
 
    if (existingProduct) {
 
-      existingProduct.qty += 1;
+      existingProduct.qty += product.qty || 1;
 
    } else {
 
       cart.push({
          product_id: product.id,
-         qty: 1,
+         quantity: product.qty || 1,
          name: product.name,
          price: product.final_price,
          thumbnail: product.thumbnail
@@ -33,30 +33,30 @@ export const addToGuestCart = (product) => {
 
 export const updateGuestCartQty = (productId, type) => {
 
-   let cart =
-      JSON.parse(localStorage.getItem("guest_cart")) || [];
+   console.log(productId)
+   let cart = JSON.parse(localStorage.getItem("guest_cart")) || [];
 
    cart = cart.map((item) => {
 
       if (item.product_id === productId) {
 
-         let qty = item.qty || 1;
+         let quantity = item.quantity || 1;
 
          if (type === "increase") {
 
-            qty++;
+           quantity++;
 
          } else {
 
-            qty--;
+            quantity--;
 
-            if (qty < 1) qty = 1;
+            if (quantity < 1) quantity = 1;
 
          }
 
          return {
             ...item,
-            qty
+            quantity
          };
 
       }
@@ -76,8 +76,7 @@ export const updateGuestCartQty = (productId, type) => {
 
 export const removeGuestCartItem = (productId) => {
 
-   let cart =
-      JSON.parse(localStorage.getItem("guest_cart")) || [];
+   let cart = JSON.parse(localStorage.getItem("guest_cart")) || [];
 
    cart = cart.filter(
       (item) => item.product_id !== productId
@@ -91,4 +90,3 @@ export const removeGuestCartItem = (productId) => {
    return cart;
 
 };
-
