@@ -1,7 +1,7 @@
 import Footer from "../components/Footer"
 import Header from "../components/Header"
 import { useContext, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { CategoryContext } from '../context/CategoryContext';
 import { getCartItems } from '../services/cart';
 import { useCart } from '../context/CartContext';
@@ -404,8 +404,8 @@ const grandTotal = itemSubtotal + deliveryFee;
                            </ul>
                            {/*  btn */}
                            <div className="d-flex justify-content-between mt-4">
-                              <a href="#!" className="btn btn-primary">Continue Shopping</a>
-                              <a href="#!" className="btn btn-dark">Update Cart</a>
+                              <NavLink to={"/"} className="btn btn-primary">Continue Shopping</NavLink>
+                             {/*  <NavLink to={"/Checkout"} className="btn btn-dark">Update Cart</NavLink> */}
                            </div>
                         </div>
                      </div>

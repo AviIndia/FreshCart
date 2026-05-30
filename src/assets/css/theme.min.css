@@ -120,11 +120,7 @@ div.zoom img {
     background: var(--fc-gray-400)
 }
 
-/*!
- * Bootstrap  v5.3.3 (https://getbootstrap.com/)
- * Copyright 2011-2024 The Bootstrap Authors
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
- */
+
 :root,
 [data-bs-theme=light] {
     --fc-blue: #0aad0a;
@@ -14148,7 +14144,9 @@ fieldset:disabled .btn {
 }
 
 .rounded-circle {
-    border-radius: 50% !important
+    border-radius: 0% !important;
+    background-color: #0aad0a;
+    padding: 4px 7px; color: #fff;font-weight: 600;
 }
 
 .rounded-pill {

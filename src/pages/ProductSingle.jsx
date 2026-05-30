@@ -16,11 +16,7 @@ import { useCart } from "../context/CartContext";
 const ProductSingle = () => {
    const { category_id, id } = useParams();
    const [qty, setQty] = useState(1);
-  const {
-   cartCount,
-   setCartCount,setCartItems,
-   loadCartItems
-} = useCart();
+  const { cartCount,setCartCount,setCartItems,loadCartItems } = useCart();
    const [productData, setProductData] = useState({});
    const [relatedProduct, setRelatedProduct] = useState([])
 

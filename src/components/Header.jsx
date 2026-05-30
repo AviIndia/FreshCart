@@ -693,7 +693,11 @@ const logout = () => {
                                     <i className="bi bi-receipt"></i> Checkout
                                  </NavLink>
                               </li>
-
+                               <li className="nav-item w-100 w-lg-auto">
+                                 <NavLink to="/Contact" className="nav-link">
+                                    <i className="bi bi-envelope"></i> Contact Us
+                                 </NavLink>
+                              </li>
                               {/* ACCOUNT MENU */}
                               <li className="nav-item dropdown w-100 w-lg-auto">
 
@@ -730,6 +734,8 @@ const logout = () => {
                                           </li>
                                        </>
                                     )}
+
+                                    
 
                                     {/* AFTER LOGIN */}
                                     {token && (
@@ -787,11 +793,7 @@ const logout = () => {
                                  </ul>
                               </li>
 
-                              <li className="nav-item w-100 w-lg-auto">
-                                 <NavLink to="/Contact" className="nav-link">
-                                    <i className="bi bi-envelope"></i> Contact Us
-                                 </NavLink>
-                              </li>
+                             
 
                            </ul>
                         </div>
@@ -988,8 +990,8 @@ const logout = () => {
                      </ul>
 
                      <div className="d-flex justify-content-between mt-4">
-                        <a href="#!" className="btn btn-primary">Continue Shopping</a>
-                        <a href="#!" className="btn btn-dark">Update Cart</a>
+                        <NavLink to={"/"} className="btn btn-primary">Continue Shopping</NavLink>
+                        <NavLink to={"/Checkout"}  className="btn btn-dark">Checkout</NavLink>
                      </div>
                   </div>
                </div>

@@ -7,6 +7,7 @@ export const CartProvider = ({ children }) => {
 
    const [cartItems, setCartItems] = useState([]);
    const [cartCount, setCartCount] = useState(0);
+   const [summary,setSummary] = useState([]);
 
 const loadCartItems = async () => {
 
@@ -28,6 +29,7 @@ const loadCartItems = async () => {
                }));
 
             setCartItems(normalizedItems);
+            setSummary(res.data.summary)
 
             setCartCount(
                res.data.summary.total_items || 0
@@ -71,7 +73,7 @@ const loadCartItems = async () => {
             setCartItems,
             cartCount,
             setCartCount,
-            loadCartItems
+            loadCartItems,summary,setSummary
          }}
       >
 

@@ -2,13 +2,19 @@ import { useEffect, useState } from "react"
 import { getAllProducts } from "../services/products";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
+
+import { NavLink } from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import { addToGuestCart } from "../utils/cartHelper";
+import { addCart } from "../services/cart";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
-import { NavLink } from "react-router-dom";
+
 const ThreeCategoryProduct = ()=>{
     const [productData, setProductData] = useState({});
-
+     const { setCartCount,setCartItems,loadCartItems } = useCart();
+    const [qty, setQty] = useState(1);
 const allProducts = async () => {
    try {
 
@@ -51,7 +57,56 @@ const groupedProducts = Object.values(
 
 ).slice(1, 4);
 
+   /* ======================= ADD TO CART================ */
 
+const handleAddToCart = async (product) => {
+
+   const token = localStorage.getItem("token");
+
+   // LOGGED USER
+   if (token) {
+
+      try {
+
+         const payload = {
+            product_id: product.id,
+            qty: qty
+         };
+
+         const res = await addCart(payload);
+
+         if (res.status) {
+
+            await loadCartItems();
+
+            alert("Product added to cart");
+
+         }
+
+      } catch (error) {
+
+         console.log(error);
+
+      }
+
+   }
+
+   // GUEST USER
+   else {
+
+      const updatedCart = addToGuestCart({...product,
+         qty
+      });
+
+      setCartItems(updatedCart);
+
+      setCartCount(updatedCart.length);
+
+      alert("Added to cart");
+
+   }
+
+};
   
         return (
   <>
@@ -226,19 +281,19 @@ const groupedProducts = Object.values(
                       <div>
 
                         <span className="text-dark">
-                          Rs.{item.price}
+                          Rs.{item.final_price}
                         </span>
 
                         <span className="text-decoration-line-through text-muted ms-2">
-                          Rs.{item.final_price}
+                          Rs.{item.price}
                         </span>
 
                       </div>
 
                       <div>
 
-                        <button className="btn btn-primary btn-sm">
-                          Add
+                        <button className="btn btn-primary btn-sm" onClick={() => handleAddToCart(item)}>
+                          Add to cart
                         </button>
 
                       </div>
