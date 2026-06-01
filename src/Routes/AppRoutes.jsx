@@ -13,6 +13,8 @@ import MyOrder from './../MyAccount/MyOrder';
 import MyAddress from './../MyAccount/MyAddress';
 import Settings from './../MyAccount/Settings';
 import PaymentMethod from "../MyAccount/PaymentMethod";
+import Thankyou from "../pages/Thankyou";
+import Shop from "../pages/Shop";
 
 const AppRoutes = ()=>{
     return(
@@ -30,6 +32,8 @@ const AppRoutes = ()=>{
             <Route path="/MyAddress" element={<MyAddress/>}></Route>
             <Route path="/Settings" element={<Settings/>}></Route>
             <Route path="/MyPaymentMethods" element={<PaymentMethod/>}></Route>
+            <Route path="/Thankyou" element={<Thankyou/>}></Route>
+            <Route path="/Shop" element={<Shop/>}></Route>
         </Routes>
     )
 }

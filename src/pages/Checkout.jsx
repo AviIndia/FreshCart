@@ -1,15 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect,useState } from "react";
 import Footer from "../components/Footer"
 import Header from "../components/Header"
 import { Navigate } from "react-router-dom";
 import { getUserAddress } from "../services/userAddress";
 import { useCart } from '../context/CartContext';
 import { placeOrder } from '../services/placeOrder'
+import Swal from "sweetalert2";
 const Checkout = () => {
+
    const token = localStorage.getItem("token");
+
    const [address, setAddress] = useState([]);
    const [selectedAddress, setSelectedAddress] = useState(null);
-   const { cartItems, setCartItems, cartCount, setCartCount,summary,setSummary } = useCart();
+
+   const { cartItems, setCartItems, setCartCount, summary } = useCart();
 
    const [paymentMethod, setPaymentMethod] = useState("COD");
    const [orderNote, setOrderNote] = useState("");
@@ -39,8 +43,12 @@ const Checkout = () => {
    };
 
    useEffect(() => {
-      getAddress()
-   }, [])
+       window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+   });
+      getAddress();
+   }, []);
 
    if (!token) {
       return <Navigate to="/Signin" replace />;
@@ -48,51 +56,55 @@ const Checkout = () => {
 
    const handlePlaceOrder = async () => {
 
-   if (!selectedAddress) {
-      alert("Please select an address");
-      return;
-   }
-
-   const selected = address.find(
-      item => item.id === selectedAddress
-   );
-
-   if (!selected) {
-      alert("Address not found");
-      return;
-   }
-
-   const payload = {
-      shipping_name: `${selected.f_name} ${selected.l_name}`,
-      shipping_phone: selected.phone || "",
-      shipping_email: "",
-      shipping_address: `${selected.address_a} ${selected.address_b || ""}`,
-      shipping_city: selected.city,
-      shipping_state: selected.state,
-      shipping_postal_code: selected.pincode,
-      shipping_country: "India",
-      order_note: orderNote,
-      coupon_code: "",
-      payment_method: paymentMethod
-   };
-
-   try {
-
-      const res = await placeOrder(payload);
-
-      if (res.status) {
-
-         alert("Order placed successfully");
-
-         console.log(res.data);
-
-         // navigate("/thank-you");
+      if (!selectedAddress) {
+         alert("Please select an address");
+         return;
       }
 
-   } catch (error) {
-      console.log(error);
-   }
-};
+      const payload = {
+         shipping_id: selectedAddress,
+         order_note: orderNote,
+         coupon_code: "",
+         payment_method: paymentMethod
+      };
+
+      try {
+
+         const res = await placeOrder(payload);
+
+         if (res.status) {
+
+            Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: "Order placed successfully",
+            });
+            setCartItems([]);
+            setCartCount(0);
+
+            console.log(res.data);
+         }
+
+      } catch (error) {
+
+         console.error(error);
+
+         if (error.response?.data?.message) {
+            alert(error.response.data.message);
+            Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: error.response.data.message,
+            });
+         } else {
+            Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong",
+            });
+         }
+      }
+   };
    return (
 
       <div>
@@ -365,13 +377,13 @@ const Checkout = () => {
                                              <div className="d-flex">
                                                 <div className="form-check">
                                                   <input
-                                                         className="form-check-input"
-                                                         type="radio"
-                                                         name="paymentMethod"
-                                                         id="cashonDelivery"
-                                                         checked={paymentMethod === "COD"}
-                                                         onChange={() => setPaymentMethod("COD")}
-                                                      />
+                                                      className="form-check-input"
+                                                      type="radio"
+                                                      name="paymentMethod"
+                                                      value="COD"
+                                                      checked={paymentMethod === "COD"}
+                                                      onChange={(e) => setPaymentMethod(e.target.value)}
+                                                   />
                                                    <label className="form-check-label ms-2" for="cashonDelivery"></label>
                                                 </div>
                                                 <div>
@@ -393,13 +405,13 @@ const Checkout = () => {
                                              aria-controls="flush-collapseThree">
                                              Prev
                                           </a>
-                                          <button
-                                             type="button"
-                                             className="btn btn-primary ms-2"
-                                             onClick={handlePlaceOrder}
-                                          >
-                                             Place Order
-                                          </button>
+                                         <button
+                                          type="button"
+                                          className="btn btn-primary ms-2"
+                                          onClick={handlePlaceOrder}
+                                       >
+                                          Place Order
+                                       </button>
                                        </div>
                                     </div>
                                  </div>

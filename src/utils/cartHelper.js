@@ -1,7 +1,6 @@
 export const addToGuestCart = (product) => {
 
-   let cart =
-      JSON.parse(localStorage.getItem("guest_cart")) || [];
+   let cart = JSON.parse(localStorage.getItem("guest_cart")) || [];
 
    const existingProduct = cart.find(
       item => item.product_id === product.id

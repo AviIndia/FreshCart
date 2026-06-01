@@ -9,13 +9,15 @@ import { updateGuestCartQty } from "../utils/cartHelper";
 import { removeCartItem } from "../services/cart";
 import { removeGuestCartItem } from "../utils/cartHelper";
 import { useNavigate } from "react-router-dom";
+import { useWishlist } from '../context/WishlistContext';
 const Header = () => {
    const { cartItems, setCartItems, cartCount, setCartCount } = useCart();
+   const {wishCount} = useWishlist()
    const { categories } = useContext(CategoryContext);
    const token = localStorage.getItem("token");
    const userName = localStorage.getItem("name")
    const navigate = useNavigate();
-
+console.log(wishCount)
 
    const loadCartCount = async () => {
 
@@ -355,8 +357,8 @@ const logout = () => {
                                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
                                  </svg>
                                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
-                                    5
-                                    <span className="visually-hidden">unread messages</span>
+                                    {wishCount > 0 && wishCount}
+                                    
                                  </span>
                               </NavLink>
                            </div>
@@ -700,15 +702,16 @@ const logout = () => {
                               </li>
                               {/* ACCOUNT MENU */}
                               <li className="nav-item dropdown w-100 w-lg-auto">
-
-                                 <a
-                                    className="nav-link dropdown-toggle"
-                                    role="button"
-                                    data-bs-toggle="dropdown"
-                                    aria-expanded="false"
-                                 >
-                                    <i className="bi bi-person-circle"></i> Account
-                                 </a>
+                                           <a
+                                       className="nav-link dropdown-toggle"
+                                       role="button"
+                                       data-bs-toggle="dropdown"
+                                       aria-expanded="false"
+                                    >
+                                       <i className="bi bi-person-circle"></i>{" "}
+                                       {token && userName ? `Hello, ${userName}` : "Account"}
+                                    </a>
+                           
 
                                  <ul className="dropdown-menu">
 

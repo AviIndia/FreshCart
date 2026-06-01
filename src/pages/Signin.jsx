@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { syncGuestCartToServer } from "../utils/syncGuestCart";
 import { useState } from "react";
 import { userLogin } from "../services/signin";
+import { useWishlist } from "../context/WishlistContext";
 
 const Signin = ()=>{
    const [email, setEmail] = useState("")
 const [password, setPassword] = useState("");
+   const { syncGuestWishlist, loadWishListItems } = useWishlist()
    const navigate = useNavigate()
    const handleLogin = async (e) => {
 
@@ -24,7 +26,8 @@ const [password, setPassword] = useState("");
       localStorage.setItem("email",res.data.user.email);
       localStorage.setItem("role",res.data.user.role);
       await syncGuestCartToServer();
-
+      await syncGuestWishlist();
+      await loadWishListItems();
       navigate("/Checkout");
 
    } else {

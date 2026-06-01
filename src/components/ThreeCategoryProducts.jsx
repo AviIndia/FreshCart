@@ -12,6 +12,7 @@ import "swiper/css/navigation";
 import "swiper/css/autoplay";
 
 const ThreeCategoryProduct = ()=>{
+  const { addToCart } = useCart()
     const [productData, setProductData] = useState({});
      const { setCartCount,setCartItems,loadCartItems } = useCart();
     const [qty, setQty] = useState(1);
@@ -292,7 +293,7 @@ const handleAddToCart = async (product) => {
 
                       <div>
 
-                        <button className="btn btn-primary btn-sm" onClick={() => handleAddToCart(item)}>
+                        <button className="btn btn-primary btn-sm"  onClick={() => addToCart(item, 1)}>
                           Add to cart
                         </button>
 

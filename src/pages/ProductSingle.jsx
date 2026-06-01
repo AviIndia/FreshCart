@@ -12,6 +12,9 @@ import { Navigation, Autoplay } from "swiper/modules";
 import { addCart } from "../services/cart";
 import { addToGuestCart } from "../utils/cartHelper";
 import { useCart } from "../context/CartContext";
+import Swal from "sweetalert2";
+import { useWishlist } from "../context/WishlistContext";
+
 
 const ProductSingle = () => {
    const { category_id, id } = useParams();
@@ -19,7 +22,7 @@ const ProductSingle = () => {
   const { cartCount,setCartCount,setCartItems,loadCartItems } = useCart();
    const [productData, setProductData] = useState({});
    const [relatedProduct, setRelatedProduct] = useState([])
-
+   const { addWishListData } = useWishlist();
    useEffect(() => {
       const productSingleData = async () => {
          try {
@@ -58,7 +61,12 @@ const handleAddToCart = async (product) => {
 
             await loadCartItems();
 
-            alert("Product added to cart");
+            
+                Swal.fire({
+                        icon: "success",
+                        title: "Success",
+                        text: "Product Added to cart",
+                        });
 
          }
 
@@ -82,7 +90,11 @@ const handleAddToCart = async (product) => {
 
       setCartCount(updatedCart.length);
 
-      alert("Added to cart");
+          Swal.fire({
+         icon: "success",
+         title: "Success",
+         text: "Product added to guest cart",
+         });
 
    }
 
@@ -294,12 +306,12 @@ const handleAddToCart = async (product) => {
                                  <i className="bi bi-arrow-left-right"></i>
                               </a>
 
-                              <a
+                              <button
                                  className="btn btn-light"
-                                 href="#"
+                                onClick={() => addWishListData(productData)}
                               >
                                  <i className="feather-icon icon-heart"></i>
-                              </a>
+                              </button>
 
                            </div>
 

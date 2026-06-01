@@ -4,9 +4,7 @@ export const placeOrder = async (data) => {
 
    const token = localStorage.getItem("token");
 
-   const res = await api.post(
-      "/order/placeOrder.php",
-      data,
+   const res = await api.post("/order/placeOrder.php",data,
       {
          headers: {
             Authorization: `Bearer ${token}`,

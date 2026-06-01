@@ -17,6 +17,7 @@ import CategoryProvider from './context/CategoryContext.jsx';
 import { BrowserRouter } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import { CartProvider } from './context/CartContext.jsx';
+import { WishlistProvider } from './context/WishlistContext.jsx';
 
 createRoot(document.getElementById('root')).render(
 <BrowserRouter>
@@ -24,7 +25,9 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <CategoryProvider>
       <CartProvider>
+        <WishlistProvider>
     <App />
+    </WishlistProvider>
     </CartProvider>
     </CategoryProvider>
   </StrictMode>
