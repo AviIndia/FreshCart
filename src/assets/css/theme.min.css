@@ -3091,7 +3091,7 @@ progress {
     border-bottom-width: var(--fc-border-width);
     box-shadow: inset 0 0 0 9999px var(--fc-table-bg-state, var(--fc-table-bg-type, var(--fc-table-accent-bg)));
     color: var(--fc-table-color-state, var(--fc-table-color-type, var(--fc-table-color)));
-    padding: .75rem 1.5rem
+    padding: .35rem 0.8rem;font-size:12px;
 }
 
 .table>tbody {

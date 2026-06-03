@@ -1,38 +1,38 @@
 const Notfound = ()=>{
     return(
         <section>
-            <div class="container d-flex flex-column">
+            <div className="container d-flex flex-column">
                 {/*--row --*/}
-               <div class="row min-vh-100 justify-content-center align-items-center">
+               <div className="row min-vh-100 justify-content-center align-items-center">
                    {/*--col --*/}
-                  <div class="offset-lg-1 col-lg-10 py-8 py-xl-0">
-                     <div class="mb-10 mb-xxl-0">
+                  <div className="offset-lg-1 col-lg-10 py-8 py-xl-0">
+                     <div className="mb-10 mb-xxl-0">
                          {/*--img --*/}
                         <a href="../index.html"><img src="../assets/images/logo/freshcart-logo.svg" alt="" /></a>
                      </div>
-                     <div class="row justify-content-center align-items-center">
+                     <div className="row justify-content-center align-items-center">
                          {/*--content --*/}
-                        <div class="col-md-6">
-                           <div class="mb-6 mb-lg-0">
+                        <div className="col-md-6">
+                           <div className="mb-6 mb-lg-0">
                               <h1>Something’s wrong here...</h1>
-                              <p class="mb-8">
+                              <p className="mb-8">
                                  We can’t find the page you’re looking for.
                                  <br />
                                  Check out our help center or head back to home.
                               </p>
                                {/*--btn --*/}
-                              <a href="#" class="btn btn-dark">
+                              <a href="#" className="btn btn-dark">
                                  Help Center
-                                 <i class="feather-icon icon-arrow-right"></i>
+                                 <i className="feather-icon icon-arrow-right"></i>
                               </a>
                                {/*--btn --*/}
-                              <a href="../index.html" class="btn btn-primary ms-2">Back to home</a>
+                              <a href="../index.html" className="btn btn-primary ms-2">Back to home</a>
                            </div>
                         </div>
-                        <div class="col-md-6">
+                        <div className="col-md-6">
                            <div>
                                {/*--img --*/}
-                              <img src="../assets/images/svg-graphics/error.svg" alt="" class="img-fluid" />
+                              <img src="../assets/images/svg-graphics/error.svg" alt="" className="img-fluid" />
                            </div>
                         </div>
                      </div>

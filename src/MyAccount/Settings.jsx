@@ -1,163 +1,294 @@
-import Footer from "../components/Footer"
+import { NavLink } from "react-router-dom"
 import Header from "../components/Header"
+import Footer from "../components/Footer"
+import { useState } from "react"
+import Swal from "sweetalert2";
+import { changePassword, editUser } from "../services/user";
+const Settings = () => {
+   const [profileForm, setProfileForm] = useState({name: "",email: "",phone: ""});
+   const [loginForm,setloginForm] = useState({newPassword:"",cnfPassword:""})
 
-const Settings = ()=>{
-    return(
-      <>
-      <Header/>
-     
-   <section>
-    
-              {/* container */}
-            <div class="container">
-                 {/* row */}
-               <div class="row">
-                    {/* col */}
-                  <div class="col-12">
-                     <div class="d-flex justify-content-between align-items-center d-md-none py-4">
-                          {/* heading */}
-                        <h3 class="fs-5 mb-0">Account Setting</h3>
-                          {/* button */}
+   const handleLogin = (e)=>{
+      const { name, value} = e.target;
+      setloginForm((prev)=>({
+         ...prev,
+         [name]:value
+      }))
+   }
+
+const passwordChange = async (e) => {
+   e.preventDefault();
+
+   const { newPassword, cnfPassword } = loginForm;
+
+   if (!newPassword || !cnfPassword) {
+      Swal.fire({
+         icon: "warning",
+         title: "Required",
+         text: "Please fill all fields"
+      });
+      return;
+   }
+
+   if (newPassword !== cnfPassword) {
+      Swal.fire({
+         icon: "error",
+         title: "Password Mismatch",
+         text: "New password and confirm password do not match"
+      });
+      return;
+   }
+   let res;
+   try {
+
+      const payload = {
+         new_password: newPassword,
+         confirm_password: cnfPassword
+      };
+
+      res = await changePassword(payload);
+
+      if (res.status) {
+
+         setloginForm({
+            newPassword: "",
+            cnfPassword: ""
+         });
+
+         Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: res.message
+         });
+      }
+
+   } catch (error) {
+
+      Swal.fire({
+         icon: "error",
+         title: "Error",
+         text:
+            res?.message ||
+         error?.response?.data?.message ||
+         "Something went wrong"
+      });
+
+      console.log(error);
+   }
+};
+   /* ================= HANDLE CHANGE ================= */
+
+   const handleChange = (e) => {
+
+      const { name, value } = e.target
+
+      setProfileForm((prev) => ({
+         ...prev,
+         [name]: value
+      }))
+
+   }
+
+   const handleSubmit = async (e) => {
+
+      e.preventDefault();
+
+      try {
+
+         const payload = {
+            name: profileForm.name,
+            email: profileForm.email,
+            phone: profileForm.phone
+         };
+         const res = await editUser(payload);
+
+         if (res.status) {
+
+            localStorage.setItem("name", res.data.name);
+            localStorage.setItem("email", res.data.email);
+            // Clear form
+            setProfileForm({ name: "", email: "", phone: "" });
+            Swal.fire({
+               icon: "success",
+               title: "Success",
+               text: res.message
+            });
+         }
+
+      } catch (error) {
+         console.log(error);
+         
+      }
+   };
+
+
+
+
+   return (<>
+      <Header />
+      <main>
+
+         <section>
+
+            <div className="container">
+
+               <div className="row">
+
+                  <div className="col-12">
+                     <div className="d-flex justify-content-between align-items-center d-md-none py-4">
+
+                        <h3 className="fs-5 mb-0">Account Setting</h3>
+
                         <button
-                           class="btn btn-outline-gray-400 text-muted d-md-none btn-icon btn-sm ms-3"
+                           className="btn btn-outline-gray-400 text-muted d-md-none btn-icon btn-sm ms-3"
                            type="button"
                            data-bs-toggle="offcanvas"
                            data-bs-target="#offcanvasAccount"
                            aria-controls="offcanvasAccount">
-                           <i class="bi bi-text-indent-left fs-3"></i>
+                           <i className="bi bi-text-indent-left fs-3"></i>
                         </button>
                      </div>
                   </div>
-                    {/* col */}
-                  <div class="col-lg-3 col-md-4 col-12 border-end d-none d-md-block">
-                     <div class="pt-10 pe-lg-10">
-                          {/* nav item */}
-                        <ul class="nav flex-column nav-pills nav-pills-dark">
-                           <li class="nav-item">
-                              <a class="nav-link" aria-current="page" href="account-orders.html">
-                                 <i class="feather-icon icon-shopping-bag me-2"></i>
+
+                  <div className="col-lg-3 col-md-4 col-12 border-end d-none d-md-block">
+                     <div className="pt-10 pe-lg-10">
+                        <ul className="nav flex-column nav-pills nav-pills-dark">
+
+                           <li className="nav-item">
+                              <NavLink
+                                 to="/MyOrder"
+                                 className={({ isActive }) =>
+                                    isActive ? "nav-link active" : "nav-link"
+                                 }
+                              >
+                                 <i className="feather-icon icon-shopping-bag me-2"></i>
                                  Your Orders
-                              </a>
+                              </NavLink>
                            </li>
-                             {/* nav item */}
-                           <li class="nav-item">
-                              <a class="nav-link active" href="account-settings.html">
-                                 <i class="feather-icon icon-settings me-2"></i>
+
+                           <li className="nav-item">
+                              <NavLink
+                                 to="/Settings"
+                                 className={({ isActive }) =>
+                                    isActive ? "nav-link active" : "nav-link"
+                                 }
+                              >
+                                 <i className="feather-icon icon-settings me-2"></i>
                                  Settings
-                              </a>
+                              </NavLink>
                            </li>
-                             {/* nav item */}
-                           <li class="nav-item">
-                              <a class="nav-link" href="account-address.html">
-                                 <i class="feather-icon icon-map-pin me-2"></i>
+
+                           <li className="nav-item">
+                              <NavLink
+                                 to="/MyAddress"
+                                 className={({ isActive }) =>
+                                    isActive ? "nav-link active" : "nav-link"
+                                 }
+                              >
+                                 <i className="feather-icon icon-map-pin me-2"></i>
                                  Address
-                              </a>
+                              </NavLink>
                            </li>
-                             {/* nav item */}
-                           <li class="nav-item">
-                              <a class="nav-link" href="account-payment-method.html">
-                                 <i class="feather-icon icon-credit-card me-2"></i>
-                                 Payment Method
-                              </a>
-                           </li>
-                             {/* nav item */}
-                           <li class="nav-item">
-                              <a class="nav-link" href="account-notification.html">
-                                 <i class="feather-icon icon-bell me-2"></i>
-                                 Notification
-                              </a>
-                           </li>
-                             {/* nav item */}
-                           <li class="nav-item">
+
+                           <li className="nav-item">
                               <hr />
                            </li>
-                             {/* nav item */}
-                           <li class="nav-item">
-                              <a class="nav-link" href="../index.html">
-                                 <i class="feather-icon icon-log-out me-2"></i>
+
+                           <li className="nav-item">
+                              <NavLink
+                                 to="/Signin"
+                                 className={({ isActive }) =>
+                                    isActive ? "nav-link active" : "nav-link"
+                                 }
+                              >
+                                 <i className="feather-icon icon-log-out me-2"></i>
                                  Log out
-                              </a>
+                              </NavLink>
                            </li>
+
                         </ul>
                      </div>
                   </div>
-                  <div class="col-lg-9 col-md-8 col-12">
-                     <div class="py-6 p-md-6 p-lg-10">
-                        <div class="mb-6">
-                             {/* heading */}
-                           <h2 class="mb-0">Account Setting</h2>
+                  <div className="col-lg-9 col-md-8 col-12">
+                     <div className="py-6 p-md-6 p-lg-10">
+                        <div className="mb-6">
+
+                           <h2 className="mb-0">Account Setting</h2>
                         </div>
                         <div>
-                             {/* heading */}
-                           <h5 class="mb-4">Account details</h5>
-                           <div class="row">
-                              <div class="col-lg-5">
-                                   {/* form */}
-                                 <form>
-                                      {/* input */}
-                                    <div class="mb-3">
-                                       <label class="form-label">Name</label>
-                                       <input type="text" class="form-control" placeholder="jitu chauhan" />
+
+
+                           <div className="row">
+                              <div className="col-lg-6">
+                                 <h5 className="mb-4">Account details</h5>
+                                 <form onSubmit={handleSubmit}>
+
+                                    <div className="mb-3">
+                                       <label className="form-label">Name</label>
+                                       <input type="text" value={profileForm.name} onChange={handleChange} name="name" className="form-control" placeholder="jitu chauhan" />
                                     </div>
-                                      {/* input */}
-                                    <div class="mb-3">
-                                       <label class="form-label">Email</label>
-                                       <input type="email" class="form-control" placeholder="example@gmail.com" />
+
+                                    <div className="mb-3">
+                                       <label className="form-label">Email</label>
+                                       <input type="email" value={profileForm.email} onChange={handleChange} name="email" className="form-control" placeholder="example@gmail.com" />
                                     </div>
-                                      {/* input */}
-                                    <div class="mb-5">
-                                       <label class="form-label">Phone</label>
-                                       <input type="text" class="form-control" placeholder="Phone number" />
+
+                                    <div className="mb-5">
+                                       <label className="form-label">Phone</label>
+                                       <input type="text" value={profileForm.phone} onChange={handleChange} name="phone" className="form-control" placeholder="Phone number" />
                                     </div>
-                                      {/* button */}
-                                    <div class="mb-3">
-                                       <button class="btn btn-primary">Save Details</button>
+
+                                    <div className="mb-3">
+                                       <button className="btn btn-primary" type="submit">Save Details</button>
                                     </div>
                                  </form>
                               </div>
+                              <div className="col-lg-6">
+                                 <h5 className="mb-4">Change Password</h5>
+
+ 
+                                 <form className="row" onSubmit={passwordChange}>
+
+                                    <div className="mb-3 col-12">
+                                       <label className="form-label">New Password</label>
+                                       <input type="password" onChange={handleLogin} name="newPassword" className="form-control" placeholder="**********" />
+                                    </div>
+
+                                    <div className="mb-3 col-12">
+                                       <label className="form-label">Current Password</label>
+                                       <input type="password" onChange={handleLogin} name="cnfPassword" className="form-control" placeholder="**********" />
+                                    </div>
+
+                                    <div className="col-12">
+                                       <p className="mb-4">
+                                          Can’t remember your current password?
+                                          <a href="#">Reset your password.</a>
+                                       </p>
+                                       <button type="submit" className="btn btn-primary">Save Password</button>
+                                    </div>
+                                 </form>
+
+                              </div>
                            </div>
                         </div>
-                        <hr class="my-10" />
-                        <div class="pe-lg-14">
-                             {/* heading */}
-                           <h5 class="mb-4">Password</h5>
-                           <form class="row row-cols-1 row-cols-lg-2">
-                                {/* input */}
-                              <div class="mb-3 col">
-                                 <label class="form-label">New Password</label>
-                                 <input type="password" class="form-control" placeholder="**********" />
-                              </div>
-                                {/* input */}
-                              <div class="mb-3 col">
-                                 <label class="form-label">Current Password</label>
-                                 <input type="password" class="form-control" placeholder="**********" />
-                              </div>
-                                {/* input */}
-                              <div class="col-12">
-                                 <p class="mb-4">
-                                    Can’t remember your current password?
-                                    <a href="#">Reset your password.</a>
-                                 </p>
-                                 <a href="#" class="btn btn-primary">Save Password</a>
-                              </div>
-                           </form>
-                        </div>
-                        <hr class="my-10" />
+                        <hr className="my-10" />
+
+
                         <div>
-                             {/* heading */}
-                           <h5 class="mb-4">Delete Account</h5>
-                           <p class="mb-2">Would you like to delete your account?</p>
-                           <p class="mb-5">This account contain 12 orders, Deleting your account will remove all the order details associated with it.</p>
-                             {/* btn */}
-                           <a href="#" class="btn btn-outline-danger">I want to delete my account</a>
+
+                           <h5 className="mb-4">Delete Account</h5>
+                           <p className="mb-2">Would you like to delete your account?</p>
+                           <p className="mb-5">This account contain 12 orders, Deleting your account will remove all the order details associated with it.</p>
+
+                           <a href="#" className="btn btn-outline-danger">I want to delete my account</a>
                         </div>
                      </div>
                   </div>
                </div>
             </div>
          </section>
-         <Footer/>
-          </>
-    )
+      </main>
+      <Footer />
+   </>)
 }
 export default Settings

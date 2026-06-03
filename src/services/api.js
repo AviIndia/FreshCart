@@ -43,27 +43,18 @@ api.interceptors.request.use(
 // RESPONSE INTERCEPTOR
 // Global error handling
 // =========================================
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
+api.interceptors.request.use(
+  (config) => {
 
-    // Unauthorized
-    if (error.response?.status === 401) {
+    const token = localStorage.getItem("token");
 
-      localStorage.removeItem("customer_token");
-      localStorage.removeItem("customer_data");
-
-      // redirect login
-      window.location.href = "/login";
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
 
-    return Promise.reject(
-      error.response?.data || {
-        success: false,
-        message: "Server Error",
-      }
-    );
-  }
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
 export default api;

@@ -1,95 +1,125 @@
+import { useEffect, useState } from "react"
 import Footer from "../components/Footer"
 import Header from "../components/Header"
+import { orderHistory } from "../services/user";
+import { useNavigate,NavLink } from "react-router-dom";
 
 const MyOrder = ()=>{
+   const navigate = useNavigate();
+   const [orderData,setOrderData] = useState([]);
+   const getOrderHistory = async ()=>{
+      try {
+         const res = await orderHistory()
+         if(res.status)
+         {
+            setOrderData(res.data.orders);
+            console.log(res.data.orders)
+         }
+      } catch (error) {
+         console.log(error)
+      }
+   }
+   useEffect(()=>{
+      getOrderHistory()
+   },[])
+
     return(
         <>
         <Header/>
         <section>
-            <div class="container">
+            <div className="container">
                 {/*  */}
               {/* row */}
-               <div class="row">
+               <div className="row">
                  {/* col */}
-                  <div class="col-12">
-                     <div class="d-flex justify-content-between align-items-center d-md-none py-4">
+                  <div className="col-12">
+                     <div className="d-flex justify-content-between align-items-center d-md-none py-4">
                        {/* heading */}
-                        <h3 class="fs-5 mb-0">Account Setting</h3>
+                        <h3 className="fs-5 mb-0">Account Setting</h3>
                        {/* button */}
                         <button
-                           class="btn btn-outline-gray-400 text-muted d-md-none btn-icon btn-sm ms-3"
+                           className="btn btn-outline-gray-400 text-muted d-md-none btn-icon btn-sm ms-3"
                            type="button"
                            data-bs-toggle="offcanvas"
                            data-bs-target="#offcanvasAccount"
                            aria-controls="offcanvasAccount">
-                           <i class="bi bi-text-indent-left fs-3"></i>
+                           <i className="bi bi-text-indent-left fs-3"></i>
                         </button>
                      </div>
                   </div>
                  {/* col */}
-                  <div class="col-lg-3 col-md-4 col-12 border-end d-none d-md-block">
-                     <div class="pt-10 pe-lg-10">
+                  <div className="col-lg-3 col-md-4 col-12 border-end d-none d-md-block">
+                     <div className="pt-10 pe-lg-10">
                        {/* nav */}
-                        <ul class="nav flex-column nav-pills nav-pills-dark">
-                          {/* nav item */}
-                           <li class="nav-item">
-                              <a class="nav-link active" aria-current="page" href="account-orders.html">
-                                 <i class="feather-icon icon-shopping-bag me-2"></i>
+                       
+
+                        <ul className="nav flex-column nav-pills nav-pills-dark">
+
+                           <li className="nav-item">
+                              <NavLink
+                                 to="/MyOrder"
+                                 className={({ isActive }) =>
+                                    isActive ? "nav-link active" : "nav-link"
+                                 }
+                              >
+                                 <i className="feather-icon icon-shopping-bag me-2"></i>
                                  Your Orders
-                              </a>
+                              </NavLink>
                            </li>
-                          {/* nav item */}
-                           <li class="nav-item">
-                              <a class="nav-link" href="account-settings.html">
-                                 <i class="feather-icon icon-settings me-2"></i>
+
+                           <li className="nav-item">
+                              <NavLink
+                                 to="/Settings"
+                                 className={({ isActive }) =>
+                                    isActive ? "nav-link active" : "nav-link"
+                                 }
+                              >
+                                 <i className="feather-icon icon-settings me-2"></i>
                                  Settings
-                              </a>
+                              </NavLink>
                            </li>
-                          {/* nav item */}
-                           <li class="nav-item">
-                              <a class="nav-link" href="account-address.html">
-                                 <i class="feather-icon icon-map-pin me-2"></i>
+
+                           <li className="nav-item">
+                              <NavLink
+                                 to="/MyAddress"
+                                 className={({ isActive }) =>
+                                    isActive ? "nav-link active" : "nav-link"
+                                 }
+                              >
+                                 <i className="feather-icon icon-map-pin me-2"></i>
                                  Address
-                              </a>
+                              </NavLink>
                            </li>
-                          {/* nav item */}
-                           <li class="nav-item">
-                              <a class="nav-link" href="account-payment-method.html">
-                                 <i class="feather-icon icon-credit-card me-2"></i>
-                                 Payment Method
-                              </a>
-                           </li>
-                          {/* nav item */}
-                           <li class="nav-item">
-                              <a class="nav-link" href="account-notification.html">
-                                 <i class="feather-icon icon-bell me-2"></i>
-                                 Notification
-                              </a>
-                           </li>
-                          {/* nav item */}
-                           <li class="nav-item">
+
+                           <li className="nav-item">
                               <hr />
                            </li>
-                          {/* nav item */}
-                           <li class="nav-item">
-                              <a class="nav-link" href="../index.html">
-                                 <i class="feather-icon icon-log-out me-2"></i>
+
+                           <li className="nav-item">
+                              <NavLink
+                                 to="/Signin"
+                                 className={({ isActive }) =>
+                                    isActive ? "nav-link active" : "nav-link"
+                                 }
+                              >
+                                 <i className="feather-icon icon-log-out me-2"></i>
                                  Log out
-                              </a>
+                              </NavLink>
                            </li>
+
                         </ul>
                      </div>
                   </div>
-                  <div class="col-lg-9 col-md-8 col-12">
-                     <div class="py-6 p-md-6 p-lg-10">
+                  <div className="col-lg-9 col-md-8 col-12">
+                     <div className="py-6 p-md-6 p-lg-10">
                        {/* heading */}
-                        <h2 class="mb-6">Your Orders</h2>
+                        <h2 className="mb-6">Your Orders</h2>
 
-                        <div class="table-responsive-xxl border-0">
+                        <div className="table-responsive-xxl border-0">
                           {/* Table */}
-                           <table class="table mb-0 text-nowrap table-centered">
+                           <table className="table mb-0 text-nowrap table-centered table-bordered">
                              {/* Table Head */}
-                              <thead class="bg-light">
+                              <thead className="bg-light">
                                  <tr>
                                     <th>&nbsp;</th>
                                     <th>Product</th>
@@ -103,145 +133,80 @@ const MyOrder = ()=>{
                                  </tr>
                               </thead>
                               <tbody>
-                                {/* Table body */}
-                                 <tr>
-                                    <td class="align-middle border-top-0 w-0">
-                                       <a href="#"><img src="../assets/images/products/product-img-1.jpg" alt="Ecommerce" class="icon-shape icon-xl" /></a>
-                                    </td>
-                                    <td class="align-middle border-top-0">
-                                       <a href="#" class="fw-semibold text-inherit">
-                                          <h6 class="mb-0">Haldiram's Nagpur Aloo Bhujia</h6>
-                                       </a>
-                                       <span><small class="text-muted">400g</small></span>
-                                    </td>
-                                    <td class="align-middle border-top-0">
-                                       <a href="#" class="text-inherit">#14899</a>
-                                    </td>
-                                    <td class="align-middle border-top-0">March 5, 2023</td>
-                                    <td class="align-middle border-top-0">1</td>
-                                    <td class="align-middle border-top-0">
-                                       <span class="badge bg-warning">Processing</span>
-                                    </td>
-                                    <td class="align-middle border-top-0">$15.00</td>
-                                    <td class="text-muted align-middle border-top-0">
-                                       <a href="#" class="text-inherit" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="View"><i class="feather-icon icon-eye"></i></a>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <td class="align-middle border-top-0 w-0">
-                                       <a href="#"><img src="../assets/images/products/product-img-2.jpg" alt="Ecommerce" class="icon-shape icon-xl" /></a>
-                                    </td>
-                                    <td class="align-middle border-top-0">
-                                       <a href="#" class="fw-semibold text-inherit">
-                                          <h6 class="mb-0">Nutri Choise Biscuit</h6>
-                                       </a>
-                                       <span><small class="text-muted">2 Pkt</small></span>
-                                    </td>
-                                    <td class="align-middle border-top-0">
-                                       <a href="#" class="text-inherit">#14658</a>
-                                    </td>
-                                    <td class="align-middle border-top-0">July 9, 2023</td>
-                                    <td class="align-middle border-top-0">2</td>
-                                    <td class="align-middle border-top-0">
-                                       <span class="badge bg-success">Completed</span>
-                                    </td>
-                                    <td class="align-middle border-top-0">$45.00</td>
-                                    <td class="text-muted align-middle border-top-0">
-                                       <a href="#" class="text-inherit" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="View"><i class="feather-icon icon-eye"></i></a>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <td class="align-middle border-top-0 w-0">
-                                       <a href="#"><img src="../assets/images/products/product-img-3.jpg" alt="Ecommerce" class="icon-shape icon-xl" /></a>
-                                    </td>
-                                    <td class="align-middle border-top-0">
-                                       <a href="#" class="text-inherit">
-                                          <h6 class="mb-0">Cadbury Dairy Milk 5 Star Bites</h6>
-                                          <span><small class="text-muted">202 g</small></span>
-                                       </a>
-                                    </td>
-                                    <td class="align-middle border-top-0">
-                                       <a href="#" class="text-inherit">#13778</a>
-                                    </td>
-                                    <td class="align-middle border-top-0">Oct 03, 2023</td>
-                                    <td class="align-middle border-top-0">4</td>
-                                    <td class="align-middle border-top-0">
-                                       <span class="badge bg-success">Completed</span>
-                                    </td>
-                                    <td class="align-middle border-top-0">$99.00</td>
-                                    <td class="text-muted align-middle border-top-0">
-                                       <a href="#" class="text-inherit" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="View"><i class="feather-icon icon-eye"></i></a>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <td class="align-middle border-top-0 w-0">
-                                       <a href="#"><img src="../assets/images/products/product-img-4.jpg" alt="Ecommerce" class="icon-shape icon-xl" /></a>
-                                    </td>
-                                    <td class="align-middle border-top-0">
-                                       <a href="#" class="fw-semibold text-inherit">
-                                          <h6 class="mb-0">Onion Flavour Potato</h6>
-                                       </a>
-                                       <span><small class="text-muted">100 g</small></span>
-                                    </td>
-                                    <td class="align-middle border-top-0">
-                                       <a href="#" class="text-inherit">#13746</a>
-                                    </td>
-                                    <td class="align-middle border-top-0">March 5, 2023</td>
-                                    <td class="align-middle border-top-0">1</td>
-                                    <td class="align-middle border-top-0">
-                                       <span class="badge bg-success">Completed</span>
-                                    </td>
-                                    <td class="align-middle border-top-0">$12.00</td>
-                                    <td class="text-muted align-middle border-top-0">
-                                       <a href="#" class="text-inherit" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="View"><i class="feather-icon icon-eye"></i></a>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <td class="align-middle border-top-0 w-0">
-                                       <a href="#"><img src="../assets/images/products/product-img-5.jpg" alt="Ecommerce" class="icon-shape icon-xl" /></a>
-                                    </td>
-                                    <td class="align-middle border-top-0">
-                                       <a href="#" class="fw-semibold text-inherit">
-                                          <h6 class="mb-0">Salted Instant Popcorn</h6>
-                                       </a>
-                                       <span><small class="text-muted">500 g</small></span>
-                                    </td>
-                                    <td class="align-middle border-top-0">
-                                       <a href="#" class="text-inherit">#13566</a>
-                                    </td>
-                                    <td class="align-middle border-top-0">July 9, 2023</td>
-                                    <td class="align-middle border-top-0">2</td>
-                                    <td class="align-middle border-top-0">
-                                       <span class="badge bg-danger">Cancel</span>
-                                    </td>
-                                    <td class="align-middle border-top-0">$6.00</td>
-                                    <td class="text-muted align-middle border-top-0">
-                                       <a href="#" class="text-inherit" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="View"><i class="feather-icon icon-eye"></i></a>
-                                    </td>
-                                 </tr>
-                                 <tr>
-                                    <td class="align-middle border-top-0 w-0">
-                                       <a href="#"><img src="../assets/images/products/product-img-6.jpg" alt="Ecommerce" class="icon-shape icon-xl" /></a>
-                                    </td>
-                                    <td class="align-middle border-top-0">
-                                       <a href="#" class="fw-semibold text-inherit">
-                                          <h6 class="mb-0">Blueberry Greek Yogurt</h6>
-                                       </a>
-                                       <span><small class="text-muted">500 g</small></span>
-                                    </td>
-                                    <td class="align-middle border-top-0">
-                                       <a href="#" class="text-inherit">#12094</a>
-                                    </td>
-                                    <td class="align-middle border-top-0">Oct 03, 2023</td>
-                                    <td class="align-middle border-top-0">4</td>
-                                    <td class="align-middle border-top-0">
-                                       <span class="badge bg-success">Completed</span>
-                                    </td>
-                                    <td class="align-middle border-top-0">$18.00</td>
-                                    <td class="text-muted align-middle border-top-0">
-                                       <a href="#" class="text-inherit" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="View"><i class="feather-icon icon-eye"></i></a>
-                                    </td>
-                                 </tr>
+                                 {orderData.map((order) => {
+
+                                    const firstItem = order.items?.[0];
+
+                                    return (
+                                       <tr key={order.id}>
+                                          <td className="align-middle border-top-0 w-0">
+                                             <a href="#">
+                                                <img style={{"width":"40px","height":"40px","borderRadius":"50%"}}
+                                                   src={firstItem?.thumbnail}
+                                                   alt={firstItem?.product_name}
+                                                   className="icon-shape icon-xl"
+                                                />
+                                             </a>
+                                          </td>
+
+                                          <td className="align-middle border-top-0">
+                                             <a href="#" className="fw-semibold text-inherit">
+                                                <h6 className="mb-0">
+                                                   {firstItem?.product_name}
+                                                </h6>
+                                             </a>
+
+                                             {order.items.length > 1 && (
+                                                <small className="text-muted">
+                                                   +{order.items.length - 1} more item(s)
+                                                </small>
+                                             )}
+                                          </td>
+
+                                          <td className="align-middle border-top-0">
+                                             <span className="text-inherit">
+                                                #{order.order_number}
+                                             </span>
+                                          </td>
+
+                                          <td className="align-middle border-top-0">
+                                             {new Date(order.created_at).toLocaleDateString()}
+                                          </td>
+
+                                          <td className="align-middle border-top-0">
+                                             {order.items.length}
+                                          </td>
+
+                                          <td className="align-middle border-top-0">
+                                             <span
+                                                className={`badge ${
+                                                   order.order_status === "delivered"
+                                                      ? "bg-success"
+                                                      : order.order_status === "cancelled"
+                                                      ? "bg-danger"
+                                                      : "bg-warning"
+                                                }`}
+                                             >
+                                                {order.order_status}
+                                             </span>
+                                          </td>
+
+                                          <td className="align-middle border-top-0">
+                                             ₹{order.total_amount}
+                                          </td>
+
+                                          <td className="text-muted align-middle border-top-0">
+                                             <button onClick={()=>
+                                          
+                                             navigate(`/orderDetails/${order.id}`)}
+                                                className="btn btn-sm btn-outline-primary"
+                                             >
+                                                View
+                                             </button>
+                                          </td>
+                                       </tr>
+                                    );
+                                 })}
                               </tbody>
                            </table>
                         </div>

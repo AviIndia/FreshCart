@@ -2,11 +2,27 @@ import Footer from "../components/Footer"
 import Header from "../components/Header"
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext"
-
+import { deleteWishList } from "../services/wishlist";
+import Swal from "sweetalert2";
 const Wishlist = ()=>{
    const {wishlistItem,wishCount} = useWishlist([]);
     const { addToCart } = useCart()
-   console.log(wishlistItem)
+   console.log("Wishlist Items",wishlistItem)
+   const removeWishList = async (id)=>{
+      try {
+         const res = await deleteWishList(id);
+         if(res.status)
+         {
+               Swal.fire({
+               icon: "success",
+               title: "Success",
+               text: "Wish List remove successfully !",
+               });
+         }
+      } catch (error) {
+         console.log(error)
+      }
+   }
     return(
     <div>{/*  */}
     <Header/>
@@ -63,19 +79,19 @@ const Wishlist = ()=>{
                                  </tr>
                               </thead>
                              <tbody>
-                           {wishlistItem.map((item, index) => {
-                              return (
-                                 <tr key={item.id || index}>
+                              {wishlistItem.length > 0 ? (
+                                 wishlistItem.map((item, index) => (
+                                    <tr key={item.id || index}>
                                     <td className="align-middle">
                                        <div className="form-check">
                                           <input
-                                             className="form-check-input"
-                                             type="checkbox"
-                                             id={`checkbox-${index}`}
+                                          className="form-check-input"
+                                          type="checkbox"
+                                          id={`checkbox-${index}`}
                                           />
                                           <label
-                                             className="form-check-label"
-                                             htmlFor={`checkbox-${index}`}
+                                          className="form-check-label"
+                                          htmlFor={`checkbox-${index}`}
                                           ></label>
                                        </div>
                                     </td>
@@ -91,48 +107,52 @@ const Wishlist = ()=>{
                                     <td className="align-middle">
                                        <div>
                                           <h5 className="fs-6 mb-0">
-                                             <a href="#" className="text-inherit">
-                                                {item.name}
-                                             </a>
+                                          <a href="#" className="text-inherit">
+                                             {item.name}
+                                          </a>
                                           </h5>
                                        </div>
                                     </td>
 
-                                    <td className="align-middle">
-                                       ₹{item.final_price}
-                                    </td>
+                                    <td className="align-middle">₹{item.final_price}</td>
 
                                     <td className="align-middle">
                                        {item.stock === 0 ? (
-                                          <span className="badge bg-danger">
-                                             Out Of Stock
-                                          </span>
+                                          <span className="badge bg-danger">Out Of Stock</span>
                                        ) : item.stock >= 5 ? (
-                                          <span className="badge bg-success">
-                                             In Stock
-                                          </span>
+                                          <span className="badge bg-success">In Stock</span>
                                        ) : (
-                                          <span className="badge bg-warning">
-                                             Low Stock
-                                          </span>
+                                          <span className="badge bg-warning">Low Stock</span>
                                        )}
                                     </td>
 
                                     <td className="align-middle">
-                                       <button className="btn btn-primary btn-sm" onClick={()=>addToCart(item,1)}>
+                                       <button
+                                          className="btn btn-primary btn-sm"
+                                          onClick={() => addToCart(item, 1)}
+                                       >
                                           Add to Cart
                                        </button>
                                     </td>
 
                                     <td className="align-middle">
-                                       <a href="#" className="text-muted">
+                                       <button
+                                          onClick={() => removeWishList(item)}
+                                          className="text-muted"
+                                       >
                                           <i className="feather-icon icon-trash-2"></i>
-                                       </a>
+                                       </button>
+                                    </td>
+                                    </tr>
+                                 ))
+                              ) : (
+                                 <tr>
+                                    <td colSpan="7" className="text-center py-5">
+                                    <h5 className="mb-0">No wishlist items found</h5>
                                     </td>
                                  </tr>
-                              );
-                           })}
-                        </tbody>
+                              )}
+                              </tbody>
                            </table>
                         </div>
                      </div>

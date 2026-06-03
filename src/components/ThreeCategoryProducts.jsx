@@ -148,20 +148,17 @@ const handleAddToCart = async (product) => {
         {/* slider */}
         <Swiper
           modules={[Navigation, Autoplay]}
-
           navigation={{
             prevEl: `.category-prev-${index}`,
             nextEl: `.category-next-${index}`,
           }}
-
           autoplay={{
-            delay: 5000,
+            delay: 3000,
             disableOnInteraction: true,
+            pauseOnMouseEnter: true, // Stop on hover
           }}
-
           loop={true}
           spaceBetween={20}
-
           breakpoints={{
             0: {
               slidesPerView: 1,

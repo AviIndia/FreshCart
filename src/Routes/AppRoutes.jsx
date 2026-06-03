@@ -15,6 +15,7 @@ import Settings from './../MyAccount/Settings';
 import PaymentMethod from "../MyAccount/PaymentMethod";
 import Thankyou from "../pages/Thankyou";
 import Shop from "../pages/Shop";
+import OrderDetails from "../MyAccount/OrderDetails";
 
 const AppRoutes = ()=>{
     return(
@@ -34,6 +35,8 @@ const AppRoutes = ()=>{
             <Route path="/MyPaymentMethods" element={<PaymentMethod/>}></Route>
             <Route path="/Thankyou" element={<Thankyou/>}></Route>
             <Route path="/Shop" element={<Shop/>}></Route>
+            <Route path="/orderDetails/:order_id" element={<OrderDetails/>}></Route>
+             <Route path="/Settings" element={<Settings/>}></Route>
         </Routes>
     )
 }
