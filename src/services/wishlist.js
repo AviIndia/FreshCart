@@ -1,7 +1,8 @@
 import api from "./api"
 
 export const addWishList = async (payload)=>{
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
+    
     const res = await api.post("/wishlist/addWishlist.php",payload,
         {
             headers:{

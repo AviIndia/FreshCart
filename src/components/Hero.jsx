@@ -4,8 +4,9 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
-import slider1 from "../assets/images/slider/slide-1.jpg";
+import slider1 from "../assets/images/slider/slider-4.png";
 import slider2 from "../assets/images/slider/slider-2.jpg";
+import { NavLink } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -34,17 +35,17 @@ const Hero = () => {
                 </span>
 
                 <h2 className="text-dark display-5 fw-bold mt-4">
-                  SuperMarket For Fresh Grocery
+                  SuperMarket For Authentic Grocery
                 </h2>
 
-                <p className="lead">
+                <p className="lead ">
                   Introduced a new model for online grocery shopping and convenient home delivery.
                 </p>
 
-                <a href="#!" className="btn btn-dark mt-3">
+                <NavLink href="#!" className="btn btn-dark mt-3">
                   Shop Now
                   <i className="feather-icon icon-arrow-right ms-1"></i>
-                </a>
+                </NavLink>
 
               </div>
             </div>
@@ -63,7 +64,7 @@ const Hero = () => {
               <div className="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-center text-md-start">
 
                 <span className="badge text-bg-warning">
-                  Free Shipping - orders over $100
+                  Free Shipping - orders over 100
                 </span>
 
                 <h2 className="text-dark display-5 fw-bold mt-4">

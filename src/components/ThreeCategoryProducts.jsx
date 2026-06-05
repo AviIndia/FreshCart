@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getAllProducts } from "../services/products";
+import { getHomeProducts } from "../services/products";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 
@@ -10,8 +10,11 @@ import { addCart } from "../services/cart";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
-
+import { useWishlist } from "../context/WishlistContext";
+import { addWishList } from './../services/wishlist';
+import Swal from "sweetalert2";
 const ThreeCategoryProduct = ()=>{
+  const { addWishListData } = useWishlist();
   const { addToCart } = useCart()
     const [productData, setProductData] = useState({});
      const { setCartCount,setCartItems,loadCartItems } = useCart();
@@ -19,7 +22,7 @@ const ThreeCategoryProduct = ()=>{
 const allProducts = async () => {
    try {
 
-      const res = await getAllProducts();
+      const res = await getHomeProducts();
 
       if (res.status) {
          setProductData(res.data);
@@ -36,27 +39,37 @@ useEffect(() => {
 
 const products = productData?.products || [];
 
+// Group products by category
 const groupedProducts = Object.values(
-   products.reduce((acc, product) => {
+  products.reduce((acc, product) => {
+    const category = product.category_name?.trim();
 
-      const category = product.category_name;
+    if (!acc[category]) {
+      acc[category] = {
+        category_name: category,
+        category_id: product.category_id,
+        products: [],
+      };
+    }
 
-      if (!acc[category]) {
+    acc[category].products.push(product);
 
-         acc[category] = {
-            category_name: category,
-            products: []
-         };
+    return acc;
+  }, {})
+);
 
-      }
+// Random 3 categories
+const [randomCategories, setRandomCategories] = useState([]);
 
-      acc[category].products.push(product);
+useEffect(() => {
+  if (groupedProducts.length) {
+    const shuffled = [...groupedProducts].sort(
+      () => Math.random() - 0.5
+    );
 
-      return acc;
-
-   }, {})
-
-).slice(1, 4);
+    setRandomCategories(shuffled.slice(0, 3));
+  }
+}, [products]);
 
    /* ======================= ADD TO CART================ */
 
@@ -80,7 +93,11 @@ const handleAddToCart = async (product) => {
 
             await loadCartItems();
 
-            alert("Product added to cart");
+            Swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Product Added to Cart",
+              });
 
          }
 
@@ -103,7 +120,11 @@ const handleAddToCart = async (product) => {
 
       setCartCount(updatedCart.length);
 
-      alert("Added to cart");
+         Swal.fire({
+          icon: "success",
+          title: "Success",
+          text: "Product Added to Cart! Please Login / Register For Checkout",
+          });
 
    }
 
@@ -111,24 +132,20 @@ const handleAddToCart = async (product) => {
   
         return (
   <>
-   {
-  groupedProducts.map((category, index) => (
-
+ {
+  randomCategories.map((category, index) => (
     <section
       className="mb-lg-5 mt-lg-7 my-5"
-      key={index}
+      key={category.category_id}
     >
       <div className="container">
 
-        {/* heading */}
         <div className="d-flex justify-content-between align-items-center mb-5">
-
           <h3 className="mb-0">
             {category.category_name}
           </h3>
 
           <div>
-
             <button
               className={`category-prev-${index} btn btn-light rounded-circle me-2`}
             >
@@ -140,12 +157,9 @@ const handleAddToCart = async (product) => {
             >
               <i className="bi bi-chevron-right"></i>
             </button>
-
           </div>
-
         </div>
 
-        {/* slider */}
         <Swiper
           modules={[Navigation, Autoplay]}
           navigation={{
@@ -154,10 +168,10 @@ const handleAddToCart = async (product) => {
           }}
           autoplay={{
             delay: 3000,
-            disableOnInteraction: true,
-            pauseOnMouseEnter: true, // Stop on hover
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
           }}
-          loop={true}
+          loop={category.products.length > 4}
           spaceBetween={20}
           breakpoints={{
             0: {
@@ -177,140 +191,71 @@ const handleAddToCart = async (product) => {
             },
           }}
         >
+          {category.products.map((item) => (
+            <SwiperSlide key={item.id}>
 
-          {
-            category.products.map((item) => (
+              <div className="card card-product h-100">
+                <div className="card-body">
 
-              <SwiperSlide key={item.id}>
+                  <div className="text-center position-relative">
 
-                {/* product card */}
-                <div className="card card-product h-100">
-                  <div className="card-body">
-
-                    {/* badge */}
-                    <div className="text-center position-relative">
-
-                      <div className="position-absolute top-0 start-0">
-                        <span className="badge bg-danger">
-                          Sale
-                        </span>
-                      </div>
-
-                      <a href="#!">
-
-                        <img
-                          src={item.thumbnail}
-                          alt={item.name}
-                          className="mb-3 img-fluid"
-                        />
-
-                      </a>
-
-                      {/* action btn */}
-                      <div className="card-product-action">
-
-                        <a
-                          href="#!"
-                          className="btn-action"
-                          data-bs-toggle="modal"
-                          data-bs-target="#quickViewModal"
-                        >
-                          <i className="bi bi-eye"></i>
-                        </a>
-
-                        <a
-                          href="#!"
-                          className="btn-action"
-                        >
-                          <i className="bi bi-heart"></i>
-                        </a>
-
-                        <a
-                          href="#!"
-                          className="btn-action"
-                        >
-                          <i className="bi bi-arrow-left-right"></i>
-                        </a>
-
-                      </div>
-
-                    </div>
-
-                    {/* heading */}
-                    <div className="text-small mb-1">
-
-                      <small className="text-muted">
-                        {item.category_name}
-                      </small>
-
-                    </div>
-
-                    <h2 className="fs-6">
-
-                      <NavLink
-                        to={`/productSingle/${item.category_id}/${item.id}`}
-                        className="text-inherit text-decoration-none"
-                      >
-                        {item.name}
-                      </NavLink>
-
-                    </h2>
-
-                    {/* rating */}
-                    <div>
-
-                      <small className="text-warning">
-                        <i className="bi bi-star-fill"></i>
-                        <i className="bi bi-star-fill"></i>
-                        <i className="bi bi-star-fill"></i>
-                        <i className="bi bi-star-fill"></i>
-                        <i className="bi bi-star-half"></i>
-                      </small>
-
-                      <span className="text-muted small ms-1">
-                        4.5(149)
+                    <div className="position-absolute top-0 start-0">
+                      <span className="badge bg-danger">
+                        Sale
                       </span>
-
                     </div>
 
-                    {/* price */}
-                    <div className="d-flex justify-content-between align-items-center mt-3">
-
-                      <div>
-
-                        <span className="text-dark">
-                          Rs.{item.final_price}
-                        </span>
-
-                        <span className="text-decoration-line-through text-muted ms-2">
-                          Rs.{item.price}
-                        </span>
-
-                      </div>
-
-                      <div>
-
-                        <button className="btn btn-primary btn-sm"  onClick={() => addToCart(item, 1)}>
-                          Add to cart
-                        </button>
-
-                      </div>
-
-                    </div>
+                    <img
+                      src={item.thumbnail}
+                      alt={item.name}
+                      className="mb-3 img-fluid"
+                    />
 
                   </div>
+
+                  <div className="text-small mb-1">
+                    <small className="text-muted">
+                      {item.category_name}
+                    </small>
+                  </div>
+
+                  <h2 className="fs-6">
+                    <NavLink
+                      to={`/productSingle/${item.category_id}/${item.id}`}
+                      className="text-inherit text-decoration-none"
+                    >
+                      {item.name}
+                    </NavLink>
+                  </h2>
+
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <div>
+                      <span className="text-dark">
+                        Rs.{item.final_price}
+                      </span>
+
+                      <span className="text-decoration-line-through text-muted ms-2">
+                        Rs.{item.price}
+                      </span>
+                    </div>
+
+                    <button
+                      className="btn btn-primary btn-sm"
+                      onClick={() => handleAddToCart(item)}
+                    >
+                      Add to Cart
+                    </button>
+                  </div>
+
                 </div>
+              </div>
 
-              </SwiperSlide>
-
-            ))
-          }
-
+            </SwiperSlide>
+          ))}
         </Swiper>
 
       </div>
     </section>
-
   ))
 }
   </>

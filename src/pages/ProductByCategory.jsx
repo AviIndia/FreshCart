@@ -5,10 +5,13 @@ import { NavLink, useParams } from 'react-router-dom';
 import { CategoryContext } from './../context/CategoryContext';
 import { productBycategory } from './../services/products';
 import { Pagination } from 'swiper/modules';
+import { useCart } from "../context/CartContext";
+import { useWishlist } from "../context/WishlistContext";
 
 
 
 const ProductByCategory = ()=>{
+  const { addWishListData } = useWishlist()
     const {categories} = useContext(CategoryContext)
     const { id } = useParams();
       const [productData, setProductData] = useState([]);
@@ -17,6 +20,7 @@ const ProductByCategory = ()=>{
       const [currentPage, setCurrentPage] = useState(1);
       const [sortBy, setSortBy] = useState("latest");
       const [limit, setLimit] = useState(12);
+      const {addToCart} = useCart();
  const fetchProductById = async (page = 1,sort = sortBy,productLimit = limit) => {
 
     try {
@@ -395,7 +399,7 @@ const handleLimitChange = (e) => {
 
             {/* action btn */}
             <div className="card-product-action">
-              <a
+              {/* <a
                 href="#!"
                 className="btn-action"
                 data-bs-toggle="modal"
@@ -407,19 +411,19 @@ const handleLimitChange = (e) => {
                   data-bs-html="true"
                   title="Quick View"
                 ></i>
-              </a>
+              </a> */}
 
-              <a
-                href="shop-wishlist.html"
+              <NavLink
+               onClick={()=>addWishListData(item)}
                 className="btn-action"
                 data-bs-toggle="tooltip"
                 data-bs-html="true"
                 title="Wishlist"
               >
                 <i className="bi bi-heart"></i>
-              </a>
+              </NavLink>
 
-              <a
+              {/* <a
                 href="#!"
                 className="btn-action"
                 data-bs-toggle="tooltip"
@@ -427,7 +431,7 @@ const handleLimitChange = (e) => {
                 title="Compare"
               >
                 <i className="bi bi-arrow-left-right"></i>
-              </a>
+              </a> */}
             </div>
           </div>
 
@@ -479,25 +483,14 @@ const handleLimitChange = (e) => {
             </div>
 
             <div>
-              <a href="#!" className="btn btn-primary btn-sm">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="feather feather-plus"
-                >
-                  <line x1="12" y1="5" x2="12" y2="19"></line>
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                </svg>
+              <NavLink  onClick={() => {
+                          console.log("aaaa", item);
+                          addToCart(item, 1);
+                      }} className="btn btn-primary btn-sm">
 
-                Add 
-              </a>
+
+                Add to cart
+              </NavLink>
             </div>
           </div>
         </div>

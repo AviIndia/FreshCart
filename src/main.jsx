@@ -18,9 +18,11 @@ import { BrowserRouter } from 'react-router-dom';
 import ScrollToTop from './components/ScrollToTop';
 import { CartProvider } from './context/CartContext.jsx';
 import { WishlistProvider } from './context/WishlistContext.jsx';
+import ScrollFix from './components/ScrollFix.jsx';
 
 createRoot(document.getElementById('root')).render(
 <BrowserRouter>
+<ScrollFix/>
 <ScrollToTop/>
   <StrictMode>
     <CategoryProvider>

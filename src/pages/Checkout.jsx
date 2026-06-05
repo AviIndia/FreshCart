@@ -1,7 +1,7 @@
 import { useEffect,useState } from "react";
 import Footer from "../components/Footer"
 import Header from "../components/Header"
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { getUserAddress } from "../services/userAddress";
 import { useCart } from '../context/CartContext';
 import { placeOrder } from '../services/placeOrder'
@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 const Checkout = () => {
 
    const token = localStorage.getItem("token");
-
+   const navigate = useNavigate();
    const [address, setAddress] = useState([]);
    const [selectedAddress, setSelectedAddress] = useState(null);
 
@@ -43,11 +43,12 @@ const Checkout = () => {
    };
 
    useEffect(() => {
+      getAddress();
        window.scrollTo({
       top: 0,
       behavior: "smooth"
    });
-      getAddress();
+      
    }, []);
 
    if (!token) {
@@ -81,7 +82,7 @@ const Checkout = () => {
             });
             setCartItems([]);
             setCartCount(0);
-
+            navigate("/Thankyou")
             console.log(res.data);
          }
 

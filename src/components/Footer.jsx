@@ -1,11 +1,20 @@
+import { NavLink } from "react-router-dom"
+import logo from "../assets/images/logo/logo-r.png";
+import { useContext } from "react";
+import { CategoryContext } from './../context/CategoryContext';
 const Footer = ()=>{
+    const {categories} = useContext(CategoryContext);
+    const half = Math.ceil(categories.length / 2);
+
+const firstColumn = categories.slice(0, half);
+const secondColumn = categories.slice(half);
     return(
         <>
- <footer className="footer bg-dark pb-6 pt-4 pt-md-12">
+ <footer className="footer bg-dark pb-6 pt-2 pt-md-12">
          <div className="container">
             <div className="row align-items-center">
                <div className="col-8 col-md-12 col-lg-4">
-                  <a href="#"><img src="../assets/images/logo/freshcart-white-logo.svg" alt="" /></a>
+                  <NavLink to={"/"}><img src={logo} alt="" style={{"width":"150px"}}/></NavLink>
                </div>
                <div className="col-4 col-md-12 col-lg-8 text-end">
                   <ul className="list-inline text-md-end mb-0 small">
@@ -40,36 +49,45 @@ const Footer = ()=>{
             <div className="row g-4">
                <div className="col-12 col-md-12 col-lg-4">
                   <h6 className="mb-4 text-white">Categories</h6>
-                  <div className="row">
-                     <div className="col-6">{/*  */}
-                        {/*  list */}
-                        <ul className="nav flex-column">
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Vegetables & Fruits</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Breakfast & instant food</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Bakery & Biscuits</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Atta, rice & dal</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Sauces & spreads</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Organic & gourmet</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Baby care</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Cleaning essentials</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Personal care</a></li>
-                        </ul>
+                 <div className="row">
+
+                        <div className="col-6">
+                           <ul className="nav flex-column">
+                              {firstColumn.map((item) => (
+                                 <li
+                                    className="nav-item mb-2"
+                                    key={item.id}
+                                 >
+                                    <NavLink
+                                       className="nav-link"
+                                       to={`/productByCategory/${item.id}`}
+                                    >
+                                       {item.category_name}
+                                    </NavLink>
+                                 </li>
+                              ))}
+                           </ul>
+                        </div>
+
+                        <div className="col-6">
+                           <ul className="nav flex-column">
+                              {secondColumn.map((item) => (
+                                 <li
+                                    className="nav-item mb-2"
+                                    key={item.id}
+                                 >
+                                    <NavLink
+                                       className="nav-link"
+                                       to={`/productByCategory/${item.id}`}
+                                    >
+                                       {item.category_name}
+                                    </NavLink>
+                                 </li>
+                              ))}
+                           </ul>
+                        </div>
+
                      </div>
-                     <div className="col-6">
-                        {/*  list */}
-                        <ul className="nav flex-column">
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Dairy, bread & eggs</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Cold drinks & juices</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Tea, coffee & drinks</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Masala, oil & more</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Chicken, meat & fish</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Paan corner</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Pharma & wellness</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Home & office</a></li>
-                           <li className="nav-item mb-2"><a href="#!" className="nav-link">Pet care</a></li>
-                        </ul>
-                     </div>
-                  </div>
                </div>
                <div className="col-12 col-md-12 col-lg-8">
                   <div className="row g-4">
@@ -125,19 +143,19 @@ const Footer = ()=>{
                <div className="row gy-4 align-items-center">
                   <div className="col-md-6">
                      <span className="small text-muted">
-                        © 2022
+                        © 2026
                         <span id="copyright">
                            -
                            <script>
                               document.getElementById("copyright").appendChild(document.createTextNode(new Date().getFullYear()));
                            </script>
                         </span>
-                        FreshCart eCommerce HTML Template. All rights reserved. Powered by
-                        <a href="https://codescandy.com/">Codescandy</a>
+                        <NavLink>Authentic Grocery</NavLink>. All rights reserved. Developed by
+                        <a href="avijitweb90@gmail.com"> Avijit Mondal</a>
                         .
                      </span>
                   </div>
-                  <div className="col-lg-6 text-end mb-2 mb-lg-0">
+                 {/*  <div className="col-lg-6 text-end mb-2 mb-lg-0">
                      <ul className="list-inline mb-0">
                         <li className="list-inline-item text-light">Payment Partners</li>
                         <li className="list-inline-item">
@@ -156,7 +174,7 @@ const Footer = ()=>{
                            <a href="#!"><img src="../assets/images/payment/visa.svg" alt="" /></a>
                         </li>
                      </ul>
-                  </div>
+                  </div> */}
                </div>
             </div>
          </div>

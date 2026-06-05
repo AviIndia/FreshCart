@@ -299,13 +299,13 @@ const handleAddToCart = async (product) => {
 
                            <div className="col-md-4 col-4">
 
-                              <a
+                            {/*   <a
                                  className="btn btn-light"
                                  href="#"
                               >
                                  <i className="bi bi-arrow-left-right"></i>
                               </a>
-
+ */}
                               <button
                                  className="btn btn-light"
                                 onClick={() => addWishListData(productData)}
@@ -921,28 +921,28 @@ const handleAddToCart = async (product) => {
 
                            {/* action btn */}
                            <div className="card-product-action">
-                              <a
+                             {/*  <a
                                  href="#!"
                                  className="btn-action"
                                  data-bs-toggle="modal"
                                  data-bs-target="#quickViewModal"
                               >
                                  <i className="bi bi-eye"></i>
-                              </a>
+                              </a> */}
 
-                              <a
-                                 href="#!"
+                              <NavLink
+                                onClick={() => addWishListData(item)}
                                  className="btn-action"
                               >
                                  <i className="bi bi-heart"></i>
-                              </a>
+                              </NavLink>
 
-                              <a
+                            {/*   <a
                                  href="#!"
                                  className="btn-action"
                               >
                                  <i className="bi bi-arrow-left-right"></i>
-                              </a>
+                              </a> */}
                            </div>
                         </div>
 
@@ -955,7 +955,7 @@ const handleAddToCart = async (product) => {
 
                         <h2 className="fs-6">
                            <Link
-                                 to={`/product/${item.category_id}/${item.id}`}
+                                 to={`/productSingle/${item.category_id}/${item.id}`}
                                  className="text-inherit text-decoration-none"
                               >
                                  {item.name}
@@ -998,7 +998,7 @@ const handleAddToCart = async (product) => {
                                  className="btn btn-primary btn-sm"
                                  onClick={() => handleAddToCart(item)}
                               >
-                                 Add
+                                 Add to cart
                               </button>
                            </div>
                         </div>

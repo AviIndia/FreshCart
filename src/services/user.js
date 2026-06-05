@@ -141,3 +141,32 @@ export const addAddress = async (payload) => {
 
    return res.data;
 };
+
+export const registerUser = async (payload) =>
+{
+   console.log(payload)
+   const res = await api.post("/auth/userRegister.php",payload);
+   return res.data;
+}
+
+
+
+export const sendOtp = async (payload) => {
+
+   const res = await api.post(
+      "/auth/sendOtp.php",
+      payload
+   );
+
+   return res.data;
+};
+
+export const verifyOtp = async (payload) => {
+
+   const res = await api.post(
+      "/auth/verifyOtp.php",
+      payload
+   );
+
+   return res.data;
+};

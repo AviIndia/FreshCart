@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState, useContext } from "react"
 import { addWishList, getWishList } from "../services/wishlist";
-
+import Swal from "sweetalert2";
 export const WishlistContext = createContext()
 export const WishlistProvider = ({ children }) => {
     const [wishlistItem, setWishlistItem] = useState([]);
@@ -36,12 +36,18 @@ export const WishlistProvider = ({ children }) => {
         try {
             if (token) {
                 const payload = {
-                    product_id: product.id,
+                    product_id: product.product_id,
                 }
-                console.log(payload)
+                console.log("AAAA",product)
                 const res = await addWishList(payload);
                 if (res.status) {
-                    await loadWishListItems()
+                    await loadWishListItems();
+                      Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Product Added to Wishlist",
+                    });
+                    
                 }
             }
             else {

@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 const Wishlist = ()=>{
    const {wishlistItem,wishCount} = useWishlist([]);
     const { addToCart } = useCart()
-   console.log("Wishlist Items",wishlistItem)
+   console.log("Wishlist Items from wish",wishlistItem)
    const removeWishList = async (id)=>{
       try {
          const res = await deleteWishList(id);
@@ -129,7 +129,10 @@ const Wishlist = ()=>{
                                     <td className="align-middle">
                                        <button
                                           className="btn btn-primary btn-sm"
-                                          onClick={() => addToCart(item, 1)}
+                                          onClick={() => {
+                                             console.log("aaaa", item.product_id);
+                                             addToCart(item, 1);
+                                          }}
                                        >
                                           Add to Cart
                                        </button>

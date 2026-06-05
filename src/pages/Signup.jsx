@@ -1,71 +1,147 @@
+import Footer from "../components/Footer"
+import Header from "../components/Header"
+import signup from "../assets/images/signup.svg"
+import Swal from "sweetalert2";
+import { useState } from "react"
+import { registerUser } from "../services/user";
 const Signup = ()=>{
+
+  const [formData, setFormData] = useState({
+  f_name: "",
+  l_name: "",
+  email: "",
+  phone: ""
+});
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+
+    const res = await registerUser(formData);
+
+    if (res.status) {
+
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: res.message
+      });
+
+      setFormData({
+        f_name: "",
+        l_name: "",
+        email: "",
+        phone: ""
+      });
+
+    }
+
+  } catch (error) {
+
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error?.response?.data?.message ||"Registration failed"
+  });
+
+   console.log(error.response?.data);
+
+  }
+};
+
     return(
-        <section class="my-lg-14 my-8">
+      <>
+      <Header/>
+        <section className="my-lg-10 my-3">
             {/*  */}
              {/*-- container--*/}
-            <div class="container">
+            <div className="container">
                 {/*-- row--*/}
-               <div class="row justify-content-center align-items-center">
-                  <div class="col-12 col-md-6 col-lg-4 order-lg-1 order-2">
+               <div className="row justify-content-center align-items-center">
+                  <div className="col-12 col-md-6 col-lg-4 order-lg-1 order-2">
                       {/*-- img--*/}
-                     <img src="../assets/images/svg-graphics/signup-g.svg" alt="" class="img-fluid" />
+                     <img src={signup} alt="" className="img-fluid" />
                   </div>
                    {/*-- col--*/}
-                  <div class="col-12 col-md-6 offset-lg-1 col-lg-4 order-lg-2 order-1">
-                     <div class="mb-lg-9 mb-5">
-                        <h1 class="mb-1 h2 fw-bold">Get Start Shopping</h1>
-                        <p>Welcome to FreshCart! Enter your email to get started.</p>
+                  <div className="col-12 col-md-6 offset-lg-1 col-lg-4 order-lg-2 order-1">
+                     <div className="mb-lg-9 mb-5">
+                        <h1 className="mb-1 h2 fw-bold">Get Start Shopping</h1>
+                        <p>Welcome to Authentic Grocery Enter your email to get started.</p>
                      </div>
                       {/*-- form--*/}
-                     <form class="needs-validation" novalidate>
-                        <div class="row g-3">
-                            {/*-- col--*/}
-                           <div class="col">
-                               {/*-- input--*/}
-                              <label for="formSignupfname" class="form-label visually-hidden">First Name</label>
-                              <input type="text" class="form-control" id="formSignupfname" placeholder="First Name" required />
-                              <div class="invalid-feedback">Please enter first name.</div>
-                           </div>
-                           <div class="col">
-                               {/*-- input--*/}
-                              <label for="formSignuplname" class="form-label visually-hidden">Last Name</label>
-                              <input type="text" class="form-control" id="formSignuplname" placeholder="First Name" required />
-                              <div class="invalid-feedback">Please enter last name.</div>
-                           </div>
-                           <div class="col-12">
-                               {/*-- input--*/}
-                              <label for="formSignupEmail" class="form-label visually-hidden">Email address</label>
-                              <input type="email" class="form-control" id="formSignupEmail" placeholder="Email" required />
-                              <div class="invalid-feedback">Please enter email.</div>
-                           </div>
-                           <div class="col-12">
-                              <div class="password-field position-relative">
-                                 <label for="formSignupPassword" class="form-label visually-hidden">Password</label>
-                                 <div class="password-field position-relative">
-                                    <input type="password" class="form-control fakePassword" id="formSignupPassword" placeholder="*****" required />
-                                    <span><i class="bi bi-eye-slash passwordToggler"></i></span>
-                                    <div class="invalid-feedback">Please enter password.</div>
-                                 </div>
-                              </div>
-                           </div>
-                            {/*-- btn--*/}
-                           <div class="col-12 d-grid"><button type="submit" class="btn btn-primary">Register</button></div>
+                     <form onSubmit={handleSubmit}>
+  <div className="row g-3">
 
-                            {/*-- text--*/}
-                           <p>
-                              <small>
-                                 By continuing, you agree to our
-                                 <a href="#!">Terms of Service</a>
-                                 &
-                                 <a href="#!">Privacy Policy</a>
-                              </small>
-                           </p>
-                        </div>
-                     </form>
+    <div className="col">
+      <input
+        type="text"
+        name="f_name"
+        className="form-control"
+        placeholder="First Name"
+        value={formData.f_name}
+        onChange={handleChange}
+        required
+      />
+    </div>
+
+    <div className="col">
+      <input
+        type="text"
+        name="l_name"
+        className="form-control"
+        placeholder="Last Name"
+        value={formData.l_name}
+        onChange={handleChange}
+        required
+      />
+    </div>
+
+    <div className="col-12">
+      <input
+        type="email"
+        name="email"
+        className="form-control"
+        placeholder="Email"
+        value={formData.email}
+        onChange={handleChange}
+        required
+      />
+    </div>
+
+    <div className="col-12">
+      <input
+        type="tel"
+        name="phone"
+        className="form-control"
+        placeholder="Mobile Number"
+        value={formData.phone}
+        onChange={handleChange}
+        required
+      />
+    </div>
+
+    <div className="col-12 d-grid">
+      <button type="submit" className="btn btn-primary">
+        Register
+      </button>
+    </div>
+
+  </div>
+</form>
                   </div>
                </div>
             </div>
          </section>
+         <Footer/>
+         </>
     )
 }
 export default Signup

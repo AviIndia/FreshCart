@@ -1,10 +1,11 @@
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import Header from "../components/Header"
 import Footer from "../components/Footer"
 import { useState } from "react"
 import Swal from "sweetalert2";
 import { changePassword, editUser } from "../services/user";
 const Settings = () => {
+   const navigate = useNavigate()
    const [profileForm, setProfileForm] = useState({name: "",email: "",phone: ""});
    const [loginForm,setloginForm] = useState({newPassword:"",cnfPassword:""})
 
@@ -122,7 +123,21 @@ const passwordChange = async (e) => {
    };
 
 
+const logout = () => {
 
+   // REMOVE STORAGE
+   localStorage.removeItem("token");
+   localStorage.removeItem("user");
+
+   // OPTIONAL
+   localStorage.removeItem("guest_cart");
+
+ 
+
+   // REDIRECT
+   navigate("/");
+
+};
 
    return (<>
       <Header />
@@ -195,8 +210,8 @@ const passwordChange = async (e) => {
                            </li>
 
                            <li className="nav-item">
-                              <NavLink
-                                 to="/Signin"
+                              <NavLink onClick={logout}
+                                
                                  className={({ isActive }) =>
                                     isActive ? "nav-link active" : "nav-link"
                                  }

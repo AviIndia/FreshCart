@@ -27,3 +27,22 @@ export const getAllProducts = async ()=>{
         console.log(error)
     }
 }
+
+export const getHomeProducts = async ()=>{
+    try {
+        const res = await api.get(`product/getHomeProducts.php`);
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+/* ============ SEARCH PRODUCT ================= */
+export const searchProduct = async (keyword) => {
+
+   const res = await api.get(
+      `/product/search.php?q=${keyword}`
+   );
+
+   return res.data;
+};

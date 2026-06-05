@@ -79,10 +79,10 @@ const loadCartItems = async () => {
          try {
    
             const payload = {
-               product_id: product.id,
+               product_id: product.product_id,
                qty: qty
             };
-   
+   console.log(product)
             const res = await addCart(payload);
    
             if (res.status) {

@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
-import logo from "../assets/images/logo/freshcart-logo.svg";
-import { useContext, useEffect } from 'react';
+import logo from "../assets/images/logo/logo-r.png";
+import { useContext, useEffect, useState,useRef } from 'react';
 import { CategoryContext } from '../context/CategoryContext';
 import { getCartItems } from '../services/cart';
 import { useCart } from '../context/CartContext';
@@ -10,15 +10,18 @@ import { removeCartItem } from "../services/cart";
 import { removeGuestCartItem } from "../utils/cartHelper";
 import { useNavigate } from "react-router-dom";
 import { useWishlist } from '../context/WishlistContext';
+import { searchProduct } from '../services/products';
 const Header = () => {
    const { cartItems, setCartItems, cartCount, setCartCount } = useCart();
+   const [keyword, setKeyword] = useState("");
+const [products, setProducts] = useState([]);
    const {wishCount} = useWishlist()
    const { categories } = useContext(CategoryContext);
    const token = localStorage.getItem("token");
    const userName = localStorage.getItem("name")
    const navigate = useNavigate();
-console.log(wishCount)
 
+const searchRef = useRef(null);
    const loadCartCount = async () => {
 
       const token = localStorage.getItem("token");
@@ -31,7 +34,7 @@ console.log(wishCount)
 
             if (res.status) {
 
-               console.log(res.data.items.length)
+              
                setCartItems(res.data.items || []);
                setCartCount(res.data.items.length || 0);
 
@@ -50,7 +53,7 @@ console.log(wishCount)
          const guestCart = JSON.parse(localStorage.getItem("guest_cart")) || [];
 
          setCartCount(guestCart.length);
-         console.log(guestCart.length)
+         
 
       }
 
@@ -99,7 +102,57 @@ console.log(wishCount)
       loadCartCount(); loadCartItems();
 
    }, []);
+/* =================== SEARCH PRODUCT================ */
+useEffect(() => {
 
+   if (!keyword.trim()) {
+      setProducts([]);
+      return;
+   }
+
+   const delay = setTimeout(async () => {
+
+      try {
+
+         const res = await searchProduct(keyword);
+
+         if (res.status) {
+            setProducts(res.data.products || []);
+         }
+
+      } catch (error) {
+         console.log(error);
+      }
+
+   }, 300);
+
+   return () => clearTimeout(delay);
+
+}, [keyword]);
+/* ==================== LIST REMOVE OUT SIDE CLICK====================== */
+/* useEffect(() => {
+
+   const handleClickOutside = (event) => {
+
+      if (
+         searchRef.current &&
+         !searchRef.current.contains(event.target)
+      ) {
+         setProducts([]);
+      }
+
+   };
+
+   document.addEventListener("mousedown", handleClickOutside);
+
+   return () => {
+      document.removeEventListener(
+         "mousedown",
+         handleClickOutside
+      );
+   };
+
+}, []); */
    /* =================== CART QTY HANDLE ============== */
    const handleQuantity = async (item, type) => {
       console.log("Handle", item)
@@ -122,11 +175,11 @@ console.log(wishCount)
                quantity: qty
             };
 
-            console.log(payload);
+           
 
             const res = await updateCart(payload);
 
-            console.log(res);
+            
 
             if (res.status) {
 
@@ -158,7 +211,7 @@ console.log(wishCount)
    const handleRemoveCart = async (item) => {
 
       const token = localStorage.getItem("token");
-      console.log("Item fetched ", item)
+      
       // LOGIN USER
       if (token) {
 
@@ -220,7 +273,7 @@ const logout = () => {
             <div className="bg-light py-1">
                <div className="container">
                   <div className="row">
-                     <div className="col-md-6 col-12 text-center text-md-start"><span>Super Value Deals - Save more with coupons</span></div>
+                     <div className="col-md-6 col-12 text-center text-md-start"><span><i className="fas fa-envelope" aria-hidden="true"></i> avijitweb90@gmail.com | 9874438716</span></div>
                      <div className="col-6 text-end d-none d-md-block">
                         <div className="dropdown selectBox">
                            <a className="dropdown-toggle selectValue text-reset" href="javascript:void(0)" data-bs-toggle="dropdown" aria-expanded="false">
@@ -294,44 +347,78 @@ const logout = () => {
                   </div>
                </div>
             </div>{/* -------------- End Topbar---------------- */}
-            <div className="py-5">
+            <div className="py-2">
                <div className="container">
                   <div className="row w-100 align-items-center gx-lg-2 gx-0">
                      <div className="col-xxl-2 col-lg-3 col-md-6 col-5">
                         <NavLink to="/" className="navbar-brand d-none d-lg-block">
-                           <img src={logo} alt="eCommerce HTML Template" />
+                           <img src={logo} alt="eCommerce HTML Template" style={{"width":"200px"}}/>
                         </NavLink>
                         <div className="d-flex justify-content-between w-100 d-lg-none">
                            <NavLink to="/" className="navbar-brandNavLink">
-                              <img src={logo} />
+                              <img src={logo} style={{"width":"200px"}}/>
                            </NavLink>
                         </div>
                      </div>
-                     <div className="col-xxl-5 col-lg-5 d-none d-lg-block">
-                        <form action="#">
+                     <div className="col-xxl-5 col-lg-5 d-none d-lg-block position-relative" ref={searchRef}>
+
                            <div className="input-group">
-                              <input className="form-control rounded" type="search" placeholder="Search for products" />
-                              <span className="input-group-append">
-                                 <button className="btn bg-white border border-start-0 ms-n10 rounded-0 rounded-end" type="button">
-                                    <svg
-                                       xmlns="http://www.w3.org/2000/svg"
-                                       width="16"
-                                       height="16"
-                                       viewBox="0 0 24 24"
-                                       fill="none"
-                                       stroke="currentColor"
-                                       strokeWidth="2"
-                                       strokeLinecap="round"
-                                       strokeLinejoin="round"
-                                       className="feather feather-search">
-                                       <circle cx="11" cy="11" r="8"></circle>
-                                       <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                    </svg>
-                                 </button>
-                              </span>
+
+                              <input
+                                 type="search"
+                                 className="form-control rounded"
+                                 placeholder="Search products..."
+                                 value={keyword}
+                                 onChange={(e) => setKeyword(e.target.value)}
+                              />
+
                            </div>
-                        </form>
-                     </div>
+                           {products.length > 0 && (
+
+                              <div
+                                 className="position-absolute bg-white shadow rounded w-100 mt-1"
+                                 style={{
+                                    zIndex: 9999,
+                                    maxHeight: "350px",
+                                    overflowY: "auto"
+                                 }}
+                              >
+
+                                 {products.map((item) => (
+
+                                    <NavLink
+                                       key={item.id}
+                                       to={`/productSingle/${item.category_id}/${item.id}`}
+                                       className="d-flex align-items-center p-2 border-bottom text-decoration-none text-dark"
+                                    >
+
+                                       <img
+                                          src={item.thumbnail}
+                                          alt={item.name}
+                                          width="50"
+                                          height="50"
+                                          className="me-2 rounded"
+                                       />
+
+                                       <div>
+
+                                          <div>{item.name}</div>
+
+                                          <small className="text-muted">
+                                             {item.category_name}
+                                          </small>
+
+                                       </div>
+
+                                    </NavLink>
+
+                                 ))}
+
+                              </div>
+
+                           )}
+
+                        </div>
                      <div className="col-md-2 col-xxl-3 d-none d-lg-block">
 
                         <button type="button" className="btn btn-outline-gray-400 text-muted" data-bs-toggle="modal" data-bs-target="#locationModal">
@@ -469,14 +556,7 @@ const logout = () => {
                                           </NavLink>
                                        </li>
 
-                                       <li>
-                                          <NavLink
-                                             to="/MyPaymentMethods"
-                                             className="dropdown-item"
-                                          >
-                                             Payment Method
-                                          </NavLink>
-                                       </li>
+                                   
 
                                        <li>
                                           <NavLink onClick={logout} className="dropdown-item">
@@ -538,41 +618,74 @@ const logout = () => {
                   <div className="offcanvas offcanvas-start" tabIndex="-1" id="navbar-default" aria-labelledby="navbar-defaultLabel">
                      <div className="offcanvas-header pb-1">
                         <NavLink to="/" className="navbar-brand">
-                           <img src={logo} />
+                           <img src={logo} style={{"width":"150px"}}/>
                         </NavLink>
                         <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                      </div>
                      <div className="offcanvas-body">
-                        <div className="d-block d-lg-none mb-4">
-                           <form action="#">
-                              <div className="input-group">
-                                 <input className="form-control rounded" type="search" placeholder="Search for products" />
-                                 <span className="input-group-append">
-                                    <button className="btn bg-white border border-start-0 ms-n10 rounded-0 rounded-end" type="button">
-                                       <svg
-                                          xmlns="http://www.w3.org/2000/svg"
-                                          width="16"
-                                          height="16"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          stroke="currentColor"
-                                          strokeWidth="2"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          className="feather feather-search">
-                                          <circle cx="11" cy="11" r="8"></circle>
-                                          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                       </svg>
-                                    </button>
-                                 </span>
+                        <div className="d-block d-lg-none mb-4" ref={searchRef}>
+                            <div className="input-group">
+
+                              <input
+                                 type="search"
+                                 className="form-control rounded"
+                                 placeholder="Search products..."
+                                 value={keyword}
+                                 onChange={(e) => setKeyword(e.target.value)}
+                              />
+
+                           </div>
+                           {products.length > 0 && (
+
+                              <div
+                                 className="position-absolute bg-white shadow rounded w-100 mt-1"
+                                 style={{
+                                    zIndex: 9999,
+                                    maxHeight: "350px",
+                                    overflowY: "auto"
+                                 }}
+                              >
+
+                                 {products.map((item) => (
+
+                                    <NavLink
+                                       key={item.id}
+                                       to={`/productSingle/${item.category_id}/${item.id}`}
+                                       className="d-flex align-items-center p-2 border-bottom text-decoration-none text-dark"
+                                    >
+
+                                       <img
+                                          src={item.thumbnail}
+                                          alt={item.name}
+                                          width="50"
+                                          height="50"
+                                          className="me-2 rounded"
+                                       />
+
+                                       <div>
+
+                                          <div>{item.name}</div>
+
+                                          <small className="text-muted">
+                                             {item.category_name}
+                                          </small>
+
+                                       </div>
+
+                                    </NavLink>
+
+                                 ))}
+
                               </div>
-                           </form>
-                           <div className="mt-2">
+
+                           )}
+
+                          {/*  <div className="mt-2">
                               <button type="button" className="btn btn-outline-gray-400 text-muted w-100" data-bs-toggle="modal" data-bs-target="#locationModal">
                                  <i className="feather-icon icon-map-pin me-2"></i>
                                  Pick Location
                               </button>
-                           </div>
+                           </div> */}
                         </div>
                         <div className="d-block d-lg-none mb-4">
                            <a
@@ -600,7 +713,7 @@ const logout = () => {
                                     <rect x="3" y="14" width="7" height="7"></rect>
                                  </svg>
                               </span>
-                              All Category
+                              All Categories
                            </a>
                            <div className="collapse mt-2" id="collapseExample">
                               <div className="card card-body">
@@ -695,11 +808,7 @@ const logout = () => {
                                     <i className="bi bi-receipt"></i> Checkout
                                  </NavLink>
                               </li>
-                               <li className="nav-item w-100 w-lg-auto">
-                                 <NavLink to="/Contact" className="nav-link">
-                                    <i className="bi bi-envelope"></i> Contact Us
-                                 </NavLink>
-                              </li>
+                           
                               {/* ACCOUNT MENU */}
                               <li className="nav-item dropdown w-100 w-lg-auto">
                                            <a
@@ -770,20 +879,10 @@ const logout = () => {
                                                 </NavLink>
                                              </li>
 
-                                             <li>
-                                                <NavLink to="/MyPaymentMethods" className="dropdown-item">
-                                                   Payment Method
-                                                </NavLink>
-                                             </li>
+                                             
 
                                              <li>
-                                                <NavLink to="/Notification" className="dropdown-item">
-                                                   Notification
-                                                </NavLink>
-                                             </li>
-
-                                             <li>
-                                                <NavLink to="/Logout" className="dropdown-item">
+                                                <NavLink onClick={logout} className="dropdown-item">
                                                    Logout
                                                 </NavLink>
                                              </li>
@@ -807,7 +906,7 @@ const logout = () => {
             </nav>
 
 
-            <div className="modal fade" id="userModal" tabIndex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+           {/*  <div className="modal fade" id="userModal" tabIndex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
                <div className="modal-dialog modal-dialog-centered">
                   <div className="modal-content p-4">
                      <div className="modal-header border-0">
@@ -848,22 +947,22 @@ const logout = () => {
                      </div>
                   </div>
                </div>
-            </div>
+            </div> */}
 
 
 
             <div className="offcanvas offcanvas-end" tabIndex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                <div className="offcanvas-header border-bottom">
                   <div className="text-start">
-                     <h5 id="offcanvasRightLabel" className="mb-0 fs-4">Shop Cart</h5>
-                     <small>Location in 382480</small>
+                     <h5 id="offcanvasRightLabel" className="mb-0 fs-4">Grocery Shop Cart</h5>
+                     {/* <small>Location in 382480</small> */}
                   </div>
                   <button type="button" className="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                </div>
                <div className="offcanvas-body">
                   <div>
 
-                     <div className="alert alert-danger p-2" role="alert">
+                     <div className="alert alert-success p-2" role="alert">
                         You’ve got FREE delivery. Start
                         <a href="#!" className="alert-link">checkout now!</a>
                      </div>
@@ -1001,7 +1100,7 @@ const logout = () => {
             </div>
 
 
-            <div className="modal fade" id="locationModal" tabIndex="-1" aria-labelledby="locationModalLabel" aria-hidden="true">
+            {/* <div className="modal fade" id="locationModal" tabIndex="-1" aria-labelledby="locationModalLabel" aria-hidden="true">
                <div className="modal-dialog modal-sm modal-dialog-centered">
                   <div className="modal-content">
                      <div className="modal-body p-6">
@@ -1068,7 +1167,7 @@ const logout = () => {
                      </div>
                   </div>
                </div>
-            </div>
+            </div> */}
          </div>
       </div>
    )
