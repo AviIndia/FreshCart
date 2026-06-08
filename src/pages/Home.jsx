@@ -1,11 +1,12 @@
 import FeaturedCategory from "../components/Categories"
 import Header from "../components/Header"
 import Hero from "../components/Hero"
-import groceryBanner from "../assets/images/banner/grocery-banner.png";
+import groceryBanner from "../assets/images/banner/grocery-banner-1.jpg";
 import grocery from "../assets/images/banner/grocery-banner-2.jpg";
 
 import Footer from "../components/Footer";
 import ThreeCategoryProduct from "../components/ThreeCategoryProducts";
+import { NavLink } from "react-router-dom";
 const Home = ()=>{
 
    /* ================= GROUPED PRODUCT ================== */
@@ -28,13 +29,13 @@ const Home = ()=>{
                                         backgroundPosition: "center",
                                       }}>
                            <div>
-                              <h3 className="fw-bold mb-1">Fruits & Vegetables</h3>
+                              <h3 className="fw-bold mb-1">Dairy Products </h3>
                               <p className="mb-4">
                                  Get Upto
                                  <span className="fw-bold">30%</span>
                                  Off
                               </p>
-                              <a href="#!" className="btn btn-dark">Shop Now</a>
+                              <NavLink to={"/Shop"} className="btn btn-dark">Shop Now</NavLink>
                            </div>
                         </div>
                      </div>
@@ -48,13 +49,13 @@ const Home = ()=>{
                                         backgroundPosition: "center",
                                       }}>
                            <div>
-                              <h3 className="fw-bold mb-1">Freshly Baked Buns</h3>
+                              <h3 className="fw-bold mb-1">Fresh Fruits & Vegetables</h3>
                               <p className="mb-4">
                                  Get Upto
                                  <span className="fw-bold">25%</span>
                                  Off
                               </p>
-                              <a href="#!" className="btn btn-dark">Shop Now</a>
+                             <NavLink to={"/Shop"} className="btn btn-dark">Shop Now</NavLink>
                            </div>
                         </div>
                      </div>

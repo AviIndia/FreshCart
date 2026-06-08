@@ -6,6 +6,7 @@ import { getUserAddress } from "../services/userAddress";
 import { useCart } from '../context/CartContext';
 import { placeOrder } from '../services/placeOrder'
 import Swal from "sweetalert2";
+import { addAddress, deleteAddress, setDefaultAddress } from "../services/user";
 const Checkout = () => {
 
    const token = localStorage.getItem("token");
@@ -17,6 +18,19 @@ const Checkout = () => {
 
    const [paymentMethod, setPaymentMethod] = useState("COD");
    const [orderNote, setOrderNote] = useState("");
+   const [addressForm,setAddressForm] = useState({
+   f_name:"",
+   l_name:"",
+   address_a:"",
+   address_b:"",
+   city:"",
+   state:"",
+   pincode:"", 
+   address_type:"",
+   mobile:"",
+   buisiness_name:"",
+   default_address:"N"
+})
 
    const getAddress = async () => {
       try {
@@ -58,7 +72,11 @@ const Checkout = () => {
    const handlePlaceOrder = async () => {
 
       if (!selectedAddress) {
-         alert("Please select an address");
+               Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Please select an address",
+            });
          return;
       }
 
@@ -69,10 +87,26 @@ const Checkout = () => {
          payment_method: paymentMethod
       };
 
+
+      // Loading popup
+        Swal.fire({
+          title: "Please wait...",
+          text: "Processing your order",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
       try {
 
          const res = await placeOrder(payload);
+         
 
+         
+
+// Loading close
+    Swal.close();
          if (res.status) {
 
             Swal.fire({
@@ -82,16 +116,22 @@ const Checkout = () => {
             });
             setCartItems([]);
             setCartCount(0);
+            
+            /* console.log(res.data);
+
+            console.log("FULL RESPONSE:", res);
+   console.log("DATA:", res.data); */
             navigate("/Thankyou")
-            console.log(res.data);
          }
 
       } catch (error) {
-
-         console.error(error);
-
+          /* console.log("ERROR:", error);
+   console.log("ERROR RESPONSE:", error.response);
+         console.error(error); */
+          // Loading close
+             Swal.close();
          if (error.response?.data?.message) {
-            alert(error.response.data.message);
+            
             Swal.fire({
             icon: "error",
             title: "Oops...",
@@ -106,6 +146,157 @@ const Checkout = () => {
          }
       }
    };
+
+
+/* ====================== ADDRESS================= */
+   /* =============== handle set default =============== */
+   const handleSetDefault = async (id) => {
+
+   const result = await Swal.fire({
+      title: "Set Default Address?",
+      text: "This address will become your default address.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+      cancelButtonText: "No"
+   });
+
+   if (!result.isConfirmed) return;
+
+   try {
+
+      const res = await setDefaultAddress(id);
+
+      if (res.status) {
+
+         Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: res.message
+         });
+
+         getAddress();
+      }
+
+   } catch (error) {
+     console.log("FULL ERROR:", error);
+
+   Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: error?.message || "Something went wrong"
+   });
+   }
+};
+
+/* ===================== delete address============= */
+ const handleDelete = async (id) => {
+   console.log("Address Id",id)
+   const result = await Swal.fire({
+      title: "Delete Address?",
+      text: "This address will be permanently deleted.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel"
+   });
+
+   if (!result.isConfirmed) return;
+
+   try {
+
+      const res = await deleteAddress(id);
+
+      if (res.status) {
+
+         Swal.fire({
+            icon: "success",
+            title: "Deleted",
+            text: res.message
+         });
+
+         getAddress();
+      }
+
+   } catch (error) {
+
+   console.log("Full Error:", error);
+
+   console.log("Response:", error.response?.data);
+
+}
+}; 
+
+
+const handleAddressChange = (e) => {
+
+   const { name, value, type, checked } = e.target;
+
+   setAddressForm((prev) => ({
+      ...prev,
+      [name]:
+         type === "checkbox"
+            ? (checked ? "Y" : "N")
+            : value
+   }));
+};
+
+const submitAddress = async (e) => {
+
+   e.preventDefault();
+
+   try {
+
+      const res = await addAddress(addressForm);
+
+      if (res.status) {
+
+         Swal.fire({
+            icon: "success",
+            title: "Success",
+            text: res.message
+         });
+
+         setAddressForm({
+            f_name: "",
+            l_name: "",
+            address_a: "",
+            address_b: "",
+            city: "",
+            state: "",
+            pincode: "",
+            address_type: "",
+            mobile: "",
+            buisiness_name: "",
+            default_address: "N"
+         });
+
+         getAddress();
+
+      }
+
+   } catch (error) {
+
+      let errorMessage = "Something went wrong";
+
+      if (error.errors) {
+         errorMessage = Object.values(error.errors).join("\n");
+      }
+
+      Swal.fire({
+         icon: "error",
+         title: "Error",
+         text: errorMessage
+      });
+
+      console.log(error);
+
+       if (error.response) {
+      console.log("API Response:", error.response.data);
+   }
+   }
+};
+
    return (
 
       <div>
@@ -174,64 +365,90 @@ const Checkout = () => {
                               </div>
                               <div id="flush-collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
                                  <div className="mt-5">
-                                    <div className="row">
-                                       {address?.map((item) => (
-                                          <div
-                                             className="col-xl-6 col-lg-12 col-md-6 col-12 mb-4"
-                                             key={item.id}
-                                          >
-                                             <div className="card card-body p-6">
+                                     <div className="row">
+                           {address?.map((item) => (
+                              <div
+                                 className="col-xl-6 col-lg-12 col-md-6 col-12 mb-4"
+                                 key={item.id}
+                              >
+                                 <div className="card card-body p-6">
 
-                                                <div className="form-check mb-4">
-                                                   <input
-                                                      className="form-check-input"
-                                                      type="radio"
-                                                      name="shippingAddress"
-                                                      id={`address_${item.id}`}
-                                                      value={item.id}
-                                                      checked={selectedAddress === item.id}
-                                                      onChange={() => setSelectedAddress(item.id)}
-                                                   />
+                                    <div className="form-check mb-4">
+                                       <input
+                                          className="form-check-input"
+                                          type="radio"
+                                          name="shippingAddress"
+                                          id={`address_${item.id}`}
+                                          value={item.id}
+                                          checked={selectedAddress === item.id}
+                                          onChange={() => setSelectedAddress(item.id)}
+                                       />
 
-                                                   <label
-                                                      className="form-check-label text-dark"
-                                                      htmlFor={`address_${item.id}`}
-                                                   >
-                                                      {item.address_type}
-                                                   </label>
-                                                </div>
-
-                                                <address>
-                                                   <strong>
-                                                      {item.f_name} {item.l_name}
-                                                   </strong>
-                                                   <br />
-
-                                                   {item.address_a}
-
-                                                   {item.address_b && (
-                                                      <>
-                                                         <br />
-                                                         {item.address_b}
-                                                      </>
-                                                   )}
-
-                                                   <br />
-
-                                                   {item.city}, {item.state} - {item.pincode}<br/>
-                                                   {item.mobile}
-                                                </address>
-
-                                                {item.default_address === "Y" && (
-                                                   <span className="text-danger">
-                                                      Default Address
-                                                   </span>
-                                                )}
-
-                                             </div>
-                                          </div>
-                                       ))}
+                                       <label
+                                          className="form-check-label text-dark"
+                                         
+                                       >
+                                          {item.address_type}
+                                       </label>
                                     </div>
+
+                                    <address>
+                                       <strong>
+                                          {item.f_name} {item.l_name}
+                                       </strong>
+                                       <br />
+
+                                       {item.address_a}
+
+                                       {item.address_b && (
+                                          <>
+                                             <br />
+                                             {item.address_b}
+                                          </>
+                                       )}
+
+                                       <br />
+
+                                       {item.city}, {item.state} - {item.pincode}<br />
+                                       {item.mobile}
+                                    </address>
+
+                                    {item.default_address === "1" && (
+                                       <span className="text-danger">
+                                          Default Address
+                                       </span>
+                                    )}
+
+
+
+
+
+                                   <div className="mt-2">
+
+                                       {item.default_address !== "1" && (
+                                          <button
+                                             className="btn btn-link p-0 text-primary"
+                                             onClick={() => handleSetDefault(item.id)}
+                                          >
+                                             Set as Default Address
+                                          </button>
+                                       )}
+
+                                       <button
+                                          className="btn btn-link text-danger ms-3 p-0"
+                                          onClick={() => handleDelete(item.id)}
+                                       >
+                                          Delete
+                                       </button>
+
+                                    </div>
+
+                                 </div>
+
+
+                              </div>
+                           ))}
+                        </div>
                                  </div>
                               </div>
                            </div>
@@ -245,7 +462,7 @@ const Checkout = () => {
                               </a>
                               <div id="flush-collapseThree" className="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
                                  <div className="mt-5">
-                                    <label for="DeliveryInstructions" className="form-label sr-only">Delivery instructions</label>
+                                    <label  className="form-label sr-only">Delivery instructions</label>
                                     <textarea
                                        className="form-control"
                                        id="DeliveryInstructions"
@@ -289,7 +506,7 @@ const Checkout = () => {
                                                 <div className="form-check">
                                                    
                                                    <input className="form-check-input" type="radio" name="flexRadioDefault" id="paypal" />
-                                                   <label className="form-check-label ms-2" for="paypal"></label>
+                                                   <label className="form-check-label ms-2"></label>
                                                 </div>
                                                 <div>
                                                   
@@ -307,7 +524,7 @@ const Checkout = () => {
                                                 <div className="form-check">
                                                   
                                                    <input className="form-check-input" type="radio" name="flexRadioDefault" id="creditdebitcard" />
-                                                   <label className="form-check-label ms-2" for="creditdebitcard"></label>
+                                                   <label className="form-check-label ms-2" ></label>
                                                 </div>
                                                 <div>
                                                    <h5 className="mb-1 h6">Credit / Debit Card</h5>
@@ -318,28 +535,28 @@ const Checkout = () => {
                                                 <div className="col-12">
                                                  
                                                    <div className="mb-3">
-                                                      <label for="card-mask" className="form-label">Card Number</label>
+                                                      <label  className="form-label">Card Number</label>
                                                       <input type="text" className="form-control" id="card-mask" placeholder="xxxx-xxxx-xxxx-xxxx" required />
                                                    </div>
                                                 </div>
                                                 <div className="col-md-6 col-12">
                                                  
                                                    <div className="mb-3 mb-lg-0">
-                                                      <label className="form-label" for="nameoncard">Name on card</label>
+                                                      <label className="form-label" >Name on card</label>
                                                       <input type="text" className="form-control" placeholder="Enter name" id="nameoncard" />
                                                    </div>
                                                 </div>
                                                 <div className="col-md-3 col-12">
                                                  
                                                    <div className="mb-3 mb-lg-0 position-relative">
-                                                      <label className="form-label" for="expirydate">Expiry date</label>
+                                                      <label className="form-label" >Expiry date</label>
                                                       <input type="text" className="form-control" id="expirydate" placeholder="MM/YY" />
                                                    </div>
                                                 </div>
                                                 <div className="col-md-3 col-12">
                                                  
                                                    <div className="mb-3 mb-lg-0">
-                                                      <label for="digit-mask" className="form-label">
+                                                      <label  className="form-label">
                                                          CVV Code
                                                          <i
                                                             className="fe fe-help-circle ms-1"
@@ -361,7 +578,7 @@ const Checkout = () => {
                                              <div className="d-flex">
                                                 <div className="form-check">
                                                    <input className="form-check-input" type="radio" name="flexRadioDefault" id="payoneer" />
-                                                   <label className="form-check-label ms-2" for="payoneer"></label>
+                                                   <label className="form-check-label ms-2" ></label>
                                                 </div>
                                                 <div>
                                                   
@@ -385,7 +602,7 @@ const Checkout = () => {
                                                       checked={paymentMethod === "COD"}
                                                       onChange={(e) => setPaymentMethod(e.target.value)}
                                                    />
-                                                   <label className="form-check-label ms-2" for="cashonDelivery"></label>
+                                                   <label className="form-check-label ms-2" ></label>
                                                 </div>
                                                 <div>
 
@@ -468,7 +685,7 @@ const Checkout = () => {
 
 
          {/* Modal */}
-         <div className="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+         <div className="modal fade" id="deleteModal"  aria-labelledby="deleteModalLabel" aria-hidden="true">
             <div className="modal-dialog">
                <div className="modal-content">
                   <div className="modal-header">
@@ -517,68 +734,164 @@ const Checkout = () => {
                      </div>
                      {/* row */}
                      <div className="row g-3">
-                        {/* col */}
-                        <div className="col-6">
-                           <input type="text" className="form-control" placeholder="First name" aria-label="First name" required="" />
-                        </div>
-                        {/* col */}
-                        <div className="col-6">
-                           <input type="text" className="form-control" placeholder="Last name" aria-label="Last name" required="" />
-                        </div>
-                        {/* col */}
-                        <div className="col-12">
-                           <input type="text" className="form-control" placeholder="Address Line 1" />
-                        </div>
-                        <div className="col-12">
-                           {/* button */}
-                           <input type="text" className="form-control" placeholder="Address Line 2" />
-                        </div>
-                        <div className="col-6">
-                           {/* button */}
-                           <input type="text" className="form-control" placeholder="City" />
-                        </div>
+                          <form onSubmit={submitAddress}>
+                           <div className="row g-3">
 
-                        <div className="col-6">
-                           {/* button */}
-                           <select className="form-select">
-                              <option selected="">West Bengal</option>
-                              <option value="1">Assam</option>
-                              <option value="2">Tripura</option>
-                              <option value="3">Manipur</option>
-                           </select>
-                        </div>
-                        <div className="col-6">
-                           {/* button */}
-                           <input type="text" className="form-control" placeholder="Pin Code" />
-                        </div>
-                        <div className="col-6">
-                           {/* button */}
-                           <select className="form-select">
-                              <option selected="">Address Type</option>
-                              <option value="home">Home</option>
-                              <option value="work">Office / Work</option>
+                              <div className="col-6">
+                                 <input
+                                    type="text"
+                                    name="f_name"
+                                    value={addressForm.f_name}
+                                    onChange={handleAddressChange}
+                                    className="form-control"
+                                    placeholder="First Name"
+                                 />
+                              </div>
 
-                           </select>
-                        </div>
-                         <div className="col-12">
-                                 <input type="text" className="form-control" placeholder="Mobile" />
-                         </div>
-                        <div className="col-12">
-                           {/* button */}
-                           <input type="text" className="form-control" placeholder="Business Name" />
-                        </div>
-                        <div className="col-12">
-                           <div className="form-check">
-                              <input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
-                              {/* label */}
-                              <label className="form-check-label" for="flexCheckDefault">Set as Default</label>
+                              <div className="col-6">
+                                 <input
+                                    type="text"
+                                    name="l_name"
+                                    value={addressForm.l_name}
+                                    onChange={handleAddressChange}
+                                    className="form-control"
+                                    placeholder="Last Name"
+                                 />
+                              </div>
+
+                              <div className="col-12">
+                                 <input
+                                    type="text"
+                                    name="address_a"
+                                    value={addressForm.address_a}
+                                    onChange={handleAddressChange}
+                                    className="form-control"
+                                    placeholder="Address Line 1"
+                                 />
+                              </div>
+
+                              <div className="col-12">
+                                 <input
+                                    type="text"
+                                    name="address_b"
+                                    value={addressForm.address_b}
+                                    onChange={handleAddressChange}
+                                    className="form-control"
+                                    placeholder="Address Line 2"
+                                 />
+                              </div>
+
+                              <div className="col-6">
+                                 <input
+                                    type="text"
+                                    name="city"
+                                    value={addressForm.city}
+                                    onChange={handleAddressChange}
+                                    className="form-control"
+                                    placeholder="City"
+                                 />
+                              </div>
+
+                              <div className="col-6">
+                                 <select
+                                    name="state"
+                                    value={addressForm.state}
+                                    onChange={handleAddressChange}
+                                    className="form-select"
+                                 >
+                                    <option value="">Select State</option>
+                                    <option value="West Bengal">West Bengal</option>
+                                    <option value="Assam">Assam</option>
+                                    <option value="Tripura">Tripura</option>
+                                    <option value="Manipur">Manipur</option>
+                                 </select>
+                              </div>
+
+                              <div className="col-6">
+                                 <input
+                                    type="text"
+                                    name="pincode"
+                                    value={addressForm.pincode}
+                                    onChange={handleAddressChange}
+                                    className="form-control"
+                                    placeholder="Pin Code"
+                                 />
+                              </div>
+
+                              <div className="col-6">
+                                 <select
+                                    name="address_type"
+                                    value={addressForm.address_type}
+                                    onChange={handleAddressChange}
+                                    className="form-select"
+                                 >
+                                    <option value="">Address Type</option>
+                                    <option value="Home">Home</option>
+                                    <option value="Office">Office / Work</option>
+                                 </select>
+                              </div>
+
+                              <div className="col-12">
+                                 <input
+                                    type="text"
+                                    name="mobile"
+                                    value={addressForm.mobile}
+                                    onChange={handleAddressChange}
+                                    className="form-control"
+                                    placeholder="Mobile"
+                                 />
+                              </div>
+
+                              <div className="col-12">
+                                 <input
+                                    type="text"
+                                    name="buisiness_name"
+                                    value={addressForm.buisiness_name}
+                                    onChange={handleAddressChange}
+                                    className="form-control"
+                                    placeholder="Business Name"
+                                 />
+                              </div>
+
+                              <div className="col-12">
+                                 <div className="form-check">
+                                    <input
+                                       className="form-check-input"
+                                       type="checkbox"
+                                       name="default_address"
+                                       checked={addressForm.default_address === "Y"}
+                                       onChange={handleAddressChange}
+                                       id="flexCheckDefault"
+                                    />
+
+                                    <label
+                                       className="form-check-label"
+                                      
+                                    >
+                                       Set as Default Address
+                                    </label>
+                                 </div>
+                              </div>
+
+                              <div className="col-12 text-end">
+                                 <button
+                                    type="button"
+                                    className="btn btn-outline-primary"
+                                    data-bs-dismiss="modal"
+                                 >
+                                    Cancel
+                                 </button>
+
+                                 <button
+                                    type="submit"
+                                    className="btn btn-primary ms-2"
+                                 >
+                                    Save Address
+                                 </button>
+                              </div>
+
                            </div>
-                        </div>
-                        {/* button */}
-                        <div className="col-12 text-end">
-                           <button type="button" className="btn btn-outline-primary" data-bs-dismiss="modal">Cancel</button>
-                           <button className="btn btn-primary" type="button">Save Address</button>
-                        </div>
+                        </form>
                      </div>
                   </div>
                </div>

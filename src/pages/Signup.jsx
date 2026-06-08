@@ -20,15 +20,26 @@ const Signup = ()=>{
     });
   };
 
-  const handleSubmit = async (e) => {
+ const handleSubmit = async (e) => {
   e.preventDefault();
 
-  try {
+  // Loading popup
+  Swal.fire({
+    title: "Please wait...",
+    text: "Processing your registration",
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
 
+  try {
     const res = await registerUser(formData);
 
-    if (res.status) {
+    // Loading close
+    Swal.close();
 
+    if (res.status) {
       Swal.fire({
         icon: "success",
         title: "Success",
@@ -41,19 +52,20 @@ const Signup = ()=>{
         email: "",
         phone: ""
       });
-
     }
 
   } catch (error) {
 
+    // Loading close
+    Swal.close();
+
     Swal.fire({
       icon: "error",
       title: "Error",
-      text: error?.response?.data?.message ||"Registration failed"
-  });
+      text: error?.response?.data?.message || "Registration failed"
+    });
 
-   console.log(error.response?.data);
-
+    console.log(error.response?.data);
   }
 };
 

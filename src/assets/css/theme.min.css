@@ -31574,7 +31574,7 @@ span.flatpickr-weekday {
     --tags-focus-border-color: var(--fc-primary) !important;
     --tag-pad: 0.6em 0.5em;
     background-color: var(--fc-white) !important;
-    border-color: var(--fc- var(--fc-gray-300)) !important;
+    border-color: var(--fc-gray-300) !important;
     border-radius: .5rem;
     line-height: 1.5
 }

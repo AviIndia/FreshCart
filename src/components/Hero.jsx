@@ -4,8 +4,9 @@ import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 
-import slider1 from "../assets/images/slider/slider-4.png";
-import slider2 from "../assets/images/slider/slider-2.jpg";
+import slider1 from "../assets/images/slider/slider-x.jpg";
+import slider2 from "../assets/images/slider/slider-z.png";
+import slider3 from "../assets/images/slider/slider-y.jpg";
 import { NavLink } from "react-router-dom";
 
 const Hero = () => {
@@ -35,14 +36,14 @@ const Hero = () => {
                 </span>
 
                 <h2 className="text-dark display-5 fw-bold mt-4">
-                  SuperMarket For Authentic Grocery
+                  Authentic Groceries, Effortlessly Delivered
                 </h2>
 
                 <p className="lead ">
-                  Introduced a new model for online grocery shopping and convenient home delivery.
+                  Redefining your kitchen experience with seamless online shopping and lightning-fast home delivery.
                 </p>
 
-                <NavLink href="#!" className="btn btn-dark mt-3">
+                 <NavLink to={"/Shop"} className="btn btn-dark mt-3">
                   Shop Now
                   <i className="feather-icon icon-arrow-right ms-1"></i>
                 </NavLink>
@@ -68,19 +69,49 @@ const Hero = () => {
                 </span>
 
                 <h2 className="text-dark display-5 fw-bold mt-4">
-                  Free Shipping on
-                  <br />
-                  orders over <span className="text-primary">$100</span>
+                  Freshness Delivered, Right to Your Door
                 </h2>
 
                 <p className="lead">
-                  Free Shipping to First-Time Customers Only, After promotions and discounts are applied.
+                  Experience a smarter way to shop for quality, authentic groceries from the comfort of home.
                 </p>
 
-                <a href="#!" className="btn btn-dark mt-3">
+                <NavLink to={"/Shop"} className="btn btn-dark mt-3">
                   Shop Now
                   <i className="feather-icon icon-arrow-right ms-1"></i>
-                </a>
+                </NavLink>
+
+              </div>
+            </div>
+          </SwiperSlide>
+
+          <SwiperSlide>
+            <div
+              style={{
+                background: `url(${slider3}) no-repeat`,
+                backgroundSize: "cover",
+                borderRadius: "0.5rem",
+                backgroundPosition: "center",
+              }}
+            >
+              <div className="ps-lg-12 py-lg-16 col-xxl-5 col-md-7 py-14 px-8 text-center text-md-start">
+
+                <span className="badge text-bg-warning">
+                  Free Shipping - orders over 200
+                </span>
+
+                <h2 className="text-dark display-5 fw-bold mt-4">
+                  The Future of Fresh is Just a Click Away
+                </h2>
+
+                <p className="lead">
+                 Upgrade your grocery shopping with our convenient, new model designed for your busy lifestyle.
+                </p>
+
+                <NavLink to={"/Shop"} className="btn btn-dark mt-3">
+                  Shop Now
+                  <i className="feather-icon icon-arrow-right ms-1"></i>
+                </NavLink>
 
               </div>
             </div>

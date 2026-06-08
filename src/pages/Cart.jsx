@@ -9,6 +9,7 @@ import { updateCart } from "../services/cart";
 import { updateGuestCartQty } from "../utils/cartHelper";
 import { removeCartItem } from "../services/cart";
 import { removeGuestCartItem } from "../utils/cartHelper";
+import nocart from "../assets/images/logo/noCart.jpg"
 const Cart = () => {
 
    const navigate = useNavigate();
@@ -196,7 +197,7 @@ const handleRemoveCart = async (item) => {
 
 /* ================= CART SUMMARY ================= */
 
-const itemSubtotal = cartItems.reduce(
+let itemSubtotal = cartItems.reduce(
    (total, item) =>
       total +
       (Number(item.final_price || item.price) *
@@ -246,8 +247,8 @@ const grandTotal = itemSubtotal + deliveryFee;
                         {/*  breadcrumb */}
                         <nav aria-label="breadcrumb">
                            <ol className="breadcrumb mb-0">
-                              <li className="breadcrumb-item"><a href="#!">Home</a></li>
-                              <li className="breadcrumb-item"><a href="#!">Shop</a></li>
+                              <li className="breadcrumb-item"><NavLink to={"/"}>Home</NavLink></li>
+                              <li className="breadcrumb-item"><NavLink to={"/Shop"}>Shop</NavLink></li>
                               <li className="breadcrumb-item active" aria-current="page">Shop Cart</li>
                            </ol>
                         </nav>
@@ -256,7 +257,7 @@ const grandTotal = itemSubtotal + deliveryFee;
                </div>
             </div>
             {/*  section */}
-            <section className="mb-lg-14 mb-8 mt-8">
+            <section className="mb-lg-14 mb-5 mt-5">
                <div className="container">
                   {/*  row */}
                   <div className="row">
@@ -265,20 +266,34 @@ const grandTotal = itemSubtotal + deliveryFee;
                         <div className="card py-1 border-0 mb-8">
                            <div>
                               <h1 className="fw-bold">Shop Cart</h1>
-                              <p className="mb-0">Shopping in 382480</p>
+                              {/* <p className="mb-0">Shopping in 382480</p> */}
                            </div>
                         </div>
                      </div>
                   </div>
                   {/*  row */}
-                  <div className="row">
+
+                  {
+                     cartItems.length > 0 ?
+                      <div className="row">
                      <div className="col-lg-8 col-md-7">
                         <div className="py-3">
                            {/*  alert */}
-                           <div className="alert alert-danger p-2" role="alert">
-                              You’ve got FREE delivery. Start
-                              <a href="#!" className="alert-link">checkout now!</a>
-                           </div>
+                          {
+                           cartItems.length > 0 && (
+                              itemSubtotal >= 200 ? (
+                                 <div className="alert alert-success p-2" role="alert">
+                                    🎉 You’ve got FREE delivery. Start{" "}
+                                    <NavLink to={"/"} className="alert-link">checkout now!</NavLink>
+                                 </div>
+                              ) : (
+                                 <div className="alert alert-warning p-2" role="alert">
+                                    Add ₹{(200 - itemSubtotal).toFixed(2)} more for FREE delivery.
+                                 </div>
+                              )
+                           )
+                        }
+                          
                            <ul className="list-group list-group-flush">
 
                               {Array.isArray(cartItems) &&
@@ -483,9 +498,9 @@ const grandTotal = itemSubtotal + deliveryFee;
                               <p>
                                  <small>
                                     By placing your order, you agree to be bound by the Freshcart
-                                    <a href="#!">Terms of Service</a>
+                                    <NavLink to={"/"}>Terms of Service</NavLink>
                                     and
-                                    <a href="#!">Privacy Policy.</a>
+                                    <NavLink to={"/"}>Privacy Policy.</NavLink>
                                  </small>
                               </p>
 
@@ -507,7 +522,20 @@ const grandTotal = itemSubtotal + deliveryFee;
                            </div>
                         </div>
                      </div>
+                     </div>
+                     :
+                     <div className="row" >
+                      <div className="card py-1 border-0 mb-8 justify-content-center align-items-center">
+                        <img src={nocart} style={{"width":"300px"}}/>
+                       <h3 className="fw-bold">No Cart Item </h3> 
+
+                        <button className="btn btn-primary col-2"  onClick={() => navigate("/")}>Continue Shopping</button>
+                      </div>
                   </div>
+                  }
+                 
+
+                  
                </div>
             </section>
          </main>

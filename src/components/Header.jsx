@@ -524,14 +524,14 @@ const logout = () => {
                                           </NavLink>
                                        </li>
 
-                                       <li>
+                                  {/*      <li>
                                           <NavLink
                                              to="/ForgotPassword"
                                              className="dropdown-item"
                                           >
                                              Forgot Password
                                           </NavLink>
-                                       </li>
+                                       </li> */}
                                     </>
                                  )}
 
@@ -838,12 +838,12 @@ const logout = () => {
                                                 Signup
                                              </NavLink>
                                           </li>
-
+{/* 
                                           <li>
                                              <NavLink to="/ForgotPassword" className="dropdown-item">
                                                 Forgot Password
                                              </NavLink>
-                                          </li>
+                                          </li> */}
                                        </>
                                     )}
 

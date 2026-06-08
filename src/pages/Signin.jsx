@@ -7,6 +7,8 @@ import { useWishlist } from "../context/WishlistContext";
 import Header from "../components/Header";
 import Footer from "../components/Footer"
 import { sendOtp, verifyOtp } from "../services/user";
+import Swal from "sweetalert2";
+
 const Signin = () => {
    const [email, setEmail] = useState("")
    const [password, setPassword] = useState("");
@@ -24,7 +26,8 @@ const Signin = () => {
 
          localStorage.setItem("token", res.data.token);
          localStorage.setItem("id", res.data.user.id);
-         localStorage.setItem("name", res.data.user.name);
+         localStorage.setItem("f_name", res.data.user.f_name);
+         localStorage.setItem("l_name", res.data.user.l_name);
          localStorage.setItem("email", res.data.user.email);
          localStorage.setItem("role", res.data.user.role);
          await syncGuestCartToServer();
@@ -49,6 +52,17 @@ const handleSendOtp = async (e) => {
 
    e.preventDefault();
 
+    // Loading popup
+     Swal.fire({
+       title: "Please wait...",
+       text: "Processing your request",
+       allowOutsideClick: false,
+       didOpen: () => {
+         Swal.showLoading();
+       }
+     });
+   
+
    try {
 
       const res = await sendOtp({
@@ -56,10 +70,15 @@ const handleSendOtp = async (e) => {
       });
 
       console.log("SEND OTP RESPONSE =>", res);
-
+       // Loading close
+          Swal.close();
       if (res.status) {
          setOtpSent(true);
-         alert("OTP Sent Successfully");
+         Swal.fire({
+                 icon: "success",
+                 title: "Success",
+                 text: res.message
+               });
       } else {
          alert(res.message);
       }
@@ -68,6 +87,11 @@ const handleSendOtp = async (e) => {
 
       console.log(error);
       console.log(error?.response?.data);
+        Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: error?.response?.data?.message || "Sending Failed"
+          });
 
    }
 
