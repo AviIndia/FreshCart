@@ -18,7 +18,7 @@ import axios from "axios";
 // CREATE AXIOS INSTANCE
 // =========================================
 const api = axios.create({
-  baseURL: "http://localhost/php_ecom_api",
+  baseURL: "https://mispltd.co.in/php_ecom_api",
   timeout: 10000,
 });
 

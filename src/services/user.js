@@ -154,7 +154,7 @@ export const registerUser = async (payload) =>
 export const sendOtp = async (payload) => {
 
    const res = await api.post(
-      "/auth/sendOtp.php",
+      "/auth/sendOTP.php",
       payload
    );
 
@@ -164,7 +164,7 @@ export const sendOtp = async (payload) => {
 export const verifyOtp = async (payload) => {
 
    const res = await api.post(
-      "/auth/verifyOtp.php",
+      "/auth/verifyOTP.php",
       payload
    );
 

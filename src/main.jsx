@@ -7,8 +7,8 @@ import './assets/libs/slick-carousel/slick/slick.css';
 import './assets/libs/slick-carousel/slick/slick-theme.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import './assets/libs/bootstrap-icons/font/bootstrap-icons.min.css';
-import './assets/libs/feather-webfont/dist/feather-icons.css';
-import './assets/libs/simplebar/dist/simplebar.min.css';
+//import './assets/libs/feather-webfont/dist/feather-icons.css';
+//import './assets/libs/simplebar/dist/simplebar.min.css';
 import './assets/css/theme.min.css';
 
 import "slick-carousel/slick/slick.css";
