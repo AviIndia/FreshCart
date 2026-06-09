@@ -21,17 +21,17 @@ import { WishlistProvider } from './context/WishlistContext.jsx';
 import ScrollFix from './components/ScrollFix.jsx';
 
 createRoot(document.getElementById('root')).render(
-<BrowserRouter>
-<ScrollFix/>
-<ScrollToTop/>
-  <StrictMode>
-    <CategoryProvider>
-      <CartProvider>
-        <WishlistProvider>
-    <App />
-    </WishlistProvider>
-    </CartProvider>
-    </CategoryProvider>
-  </StrictMode>
+  <BrowserRouter basename="/grocery">
+    <ScrollFix />
+    <ScrollToTop />
+    <StrictMode>
+      <CategoryProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <App />
+          </WishlistProvider>
+        </CartProvider>
+      </CategoryProvider>
+    </StrictMode>
   </BrowserRouter>
 )

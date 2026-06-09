@@ -32,7 +32,8 @@ const loadCartItems = async () => {
                }));
 
             setCartItems(normalizedItems);
-            setSummary(res.data.summary)
+            setSummary(res.data.summary);
+            //console.log(res.data.summary)
 
             setCartCount(
                res.data.summary.total_items || 0

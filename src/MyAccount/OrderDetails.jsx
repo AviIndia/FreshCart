@@ -2,9 +2,10 @@ import { useEffect, useState } from "react"
 import Footer from "../components/Footer"
 import Header from "../components/Header"
 import { myorderDetails } from "../services/user";
-import { useParams,NavLink } from "react-router-dom";
+import { useParams,NavLink, useNavigate } from "react-router-dom";
 
 const OrderDetails = () => {
+   const navigate = useNavigate()
    const [orderDetails, setOrderDetails] = useState(null);
    const [loading, setLoading] = useState(true);
 
@@ -25,6 +26,16 @@ const OrderDetails = () => {
    };
 
    useEffect(() => {
+
+       const token = localStorage.getItem("token");
+      // LOGIN NA THAKLE
+      if (!token) {
+
+         navigate("/Signin");
+
+         return;
+
+      }
       console.log(order_id);
       detailsOrder(order_id);
       /* if (order_id) {

@@ -275,7 +275,8 @@ const logout = () => {
                   <div className="row">
                      <div className="col-md-6 col-12 text-center text-md-start"><span><i className="fas fa-envelope" aria-hidden="true"></i> avijitweb90@gmail.com | 9874438716</span></div>
                      <div className="col-6 text-end d-none d-md-block">
-                        <div className="dropdown selectBox">
+                        <span><i className="fas fa-envelope" aria-hidden="true"></i> Fast Delivery, Fresh Products.</span>
+                        {/* <div className="dropdown selectBox">
                            <a className="dropdown-toggle selectValue text-reset" href="javascript:void(0)" data-bs-toggle="dropdown" aria-expanded="false">
                               <span className="me-2">
                                  <svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -342,7 +343,8 @@ const logout = () => {
                                  </a>
                               </li>
                            </ul>
-                        </div>
+                        </div> */}
+                      
                      </div>
                   </div>
                </div>

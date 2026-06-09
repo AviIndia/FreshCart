@@ -20,6 +20,16 @@ const MyOrder = ()=>{
       }
    }
    useEffect(()=>{
+
+       const token = localStorage.getItem("token");
+      // LOGIN NA THAKLE
+      if (!token) {
+
+         navigate("/Signin");
+
+         return;
+
+      }
       getOrderHistory()
    },[])
 

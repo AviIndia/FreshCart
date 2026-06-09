@@ -5,3 +5,17 @@
   font-weight: 600;
   font-style: normal;
 }
+.product-title{
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* maximum 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+    max-height: calc(1.4em * 2);
+}
+.product-image
+{
+  height: 200px;
+  border-radius:7px;
+}

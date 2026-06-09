@@ -101,37 +101,36 @@ const handleSendOtp = async (e) => {
 
       e.preventDefault();
 
-      const res = await verifyOtp({
-         email: otpEmail,
-         otp
-      });
+       // Loading popup
+     Swal.fire({
+       title: "Please wait...",
+       text: "Processing your request",
+       allowOutsideClick: false,
+       didOpen: () => {
+         Swal.showLoading();
+       }
+     });
+   
 
+      const res = await verifyOtp({email: otpEmail,otp});
+     Swal.close();
       if (res.status) {
+         
 
-         localStorage.setItem(
-            "token",
-            res.data.token
-         );
+          Swal.fire({
+                 icon: "success",
+                 title: "Success",
+                 text: res.message
+               });
+         localStorage.setItem("token",res.data.token);
 
-         localStorage.setItem(
-            "id",
-            res.data.user.id
-         );
+         localStorage.setItem("id",res.data.user.id);
 
-         localStorage.setItem(
-            "name",
-            `${res.data.user.f_name} ${res.data.user.l_name}`
-         );
+         localStorage.setItem("name",`${res.data.user.f_name} ${res.data.user.l_name}`);
 
-         localStorage.setItem(
-            "email",
-            res.data.user.email
-         );
+         localStorage.setItem("email",res.data.user.email);
 
-         localStorage.setItem(
-            "role",
-            res.data.user.role
-         );
+         localStorage.setItem("role",res.data.user.role);
 
          await syncGuestCartToServer();
          await syncGuestWishlist();
@@ -212,7 +211,7 @@ const handleSendOtp = async (e) => {
 
                      <label
                         className="form-check-label"
-                        htmlFor="rememberMe"
+                        htmlhtmlFor="rememberMe"
                      >
                         Remember me
                      </label>

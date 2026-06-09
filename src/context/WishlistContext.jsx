@@ -36,9 +36,9 @@ export const WishlistProvider = ({ children }) => {
         try {
             if (token) {
                 const payload = {
-                    product_id: product.product_id,
+                    product_id: product.id,
                 }
-                console.log("AAAA",product)
+                console.log("AAAA",payload)
                 const res = await addWishList(payload);
                 if (res.status) {
                     await loadWishListItems();
@@ -51,8 +51,7 @@ export const WishlistProvider = ({ children }) => {
                 }
             }
             else {
-                const guestWish =
-                    JSON.parse(localStorage.getItem("guestWish")) || [];
+                const guestWish = JSON.parse(localStorage.getItem("guestWish")) || [];
 
                 const exists = guestWish.find(
                     item => item.id === product.id
@@ -61,13 +60,16 @@ export const WishlistProvider = ({ children }) => {
                 if (!exists) {
                     guestWish.push(product);
 
-                    localStorage.setItem(
-                        "guestWish",
-                        JSON.stringify(guestWish)
-                    );
+                    localStorage.setItem("guestWish",JSON.stringify(guestWish));
 
                     setWishlistItem(guestWish);
                     setWishCount(guestWish.length);
+
+                     Swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Product Added to Guest Wishlist",
+                    });
                 }
             }
         } catch (error) {
@@ -110,7 +112,8 @@ export const WishlistProvider = ({ children }) => {
                 wishCount,
                 addWishListData,
                 loadWishListItems,
-                syncGuestWishlist
+                syncGuestWishlist,
+                setWishlistItem
             }}
         >
             {children}

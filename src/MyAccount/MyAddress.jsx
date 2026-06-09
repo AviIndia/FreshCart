@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import Footer from "../components/Footer"
 import Header from "../components/Header"
 import { useState, useEffect } from "react";
@@ -6,8 +6,10 @@ import { getUserAddress } from "../services/userAddress";
 import { addAddress, deleteAddress, setDefaultAddress } from "../services/user";
 import Swal from "sweetalert2";
 const MyAddress = () => {
+   const navigate = useNavigate();
    const [address, setAddress] = useState([]);
    const [selectedAddress, setSelectedAddress] = useState(null);
+   
    const getAddress = async () => {
       try {
          const res = await getUserAddress();
@@ -33,6 +35,17 @@ const MyAddress = () => {
    };
 
    useEffect(() => {
+
+       const token = localStorage.getItem("token");
+      // LOGIN NA THAKLE
+      if (!token) {
+
+         navigate("/Signin");
+
+         return;
+
+      }
+
       window.scrollTo({
          top: 0,
          behavior: "smooth"

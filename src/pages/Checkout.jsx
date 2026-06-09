@@ -31,6 +31,7 @@ const Checkout = () => {
    buisiness_name:"",
    default_address:"N"
 })
+console.log(summary)
 
    const getAddress = async () => {
       try {
@@ -669,6 +670,14 @@ const submitAddress = async (e) => {
                                  {/* list group item */}
                                  <li className="list-group-item px-4 py-3">
                                     <div className="d-flex align-items-center justify-content-between fw-bold">
+                                       <div>Delivery Fees</div>
+                                      <div>₹{summary.delivery_fee}</div>
+                                     
+                                    </div>
+                                 </li>
+                                   <li className="list-group-item px-4 py-3">
+                                    <div className="d-flex align-items-center justify-content-between fw-bold">
+                                      
                                        <div>Subtotal</div>
                                       <div>₹{summary.grand_total}</div>
                                       

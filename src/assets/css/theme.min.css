@@ -26514,17 +26514,29 @@ fieldset:disabled .btn {
     top: 32px
 }
 
-.navbar .dropdown .dropdown-toggle:after {
+ .navbar .dropdown .dropdown-toggle:after {
     background-repeat: no-repeat;
     background-size: .625rem .625rem;
     border: none;
     color: var(--fc-gray-600);
-    content: "\f12f";
+     content: "▼";
     float: right;
     font-family: feather-icons !important;
     line-height: 2;
     margin-left: .375rem
-}
+} 
+
+/* .navbar .dropdown .dropdown-toggle::after {
+    content: "";
+    display: inline-block;
+    margin-left: 8px;
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid #666;
+    border-bottom: 2px solid #666;
+    margin-top:10px;
+    transform: rotate(45deg) translateY(-2px);
+} */
 
 .navbar .dropdown-menu {
     border-radius: .5rem;

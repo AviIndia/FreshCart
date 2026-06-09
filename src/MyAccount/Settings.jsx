@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom"
 import Header from "../components/Header"
 import Footer from "../components/Footer"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Swal from "sweetalert2";
 import { changePassword, editUser } from "../services/user";
 const Settings = () => {
@@ -16,7 +16,17 @@ const Settings = () => {
          [name]:value
       }))
    }
+useEffect(()=>{
+    const token = localStorage.getItem("token");
+      // LOGIN NA THAKLE
+      if (!token) {
 
+         navigate("/Signin");
+
+         return;
+
+      }
+})
 const passwordChange = async (e) => {
    e.preventDefault();
 

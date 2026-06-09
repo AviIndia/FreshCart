@@ -30,7 +30,7 @@ const ProductSingle = () => {
             if (res.status) {
                setProductData(res.data.product);
                setRelatedProduct(res.data.related_products)
-               console.log(res.data.product)
+               console.log("PRODUCT DATA",res.data.product)
             }
          } catch (error) {
             console.log(error)
@@ -114,9 +114,9 @@ const handleAddToCart = async (product) => {
                      <nav aria-label="breadcrumb">
                         <ol className="breadcrumb mb-0">
                            <li className="breadcrumb-item"><NavLink href="#">Home</NavLink></li>
-                           <li className="breadcrumb-item"><NavLink href="#">Bakery Biscuits</NavLink></li>
+                           <li className="breadcrumb-item"><NavLink to={`/productByCategory/${productData.category_id}`}>{productData.category_name}</NavLink></li>
 
-                           <li className="breadcrumb-item active" aria-current="page">Napolitanke Ljesnjak</li>
+                           <li className="breadcrumb-item active" aria-current="page">{productData.name}</li>
                         </ol>
                      </nav>
                   </div>
@@ -258,7 +258,7 @@ const handleAddToCart = async (product) => {
 
                               <input
                                        type="button"
-                                       value="-"
+                                       defaultValue="-"
                                        className="button-minus btn btn-sm"
                                        onClick={() => {
                                           if (qty > 1) {
@@ -269,14 +269,14 @@ const handleAddToCart = async (product) => {
 
                                     <input
                                        type="number"
-                                       value={qty}
+                                       defaultValue={qty}
                                        readOnly
                                        className="quantity-field form-control-sm form-input"
                                     />
 
                                     <input
                                        type="button"
-                                       value="+"
+                                       defaultValue="+"
                                        className="button-plus btn btn-sm"
                                        onClick={() => setQty(qty + 1)}
                                     />
@@ -310,7 +310,7 @@ const handleAddToCart = async (product) => {
                                  className="btn btn-light"
                                 onClick={() => addWishListData(productData)}
                               >
-                                 <i className="feather-icon icon-heart"></i>
+                                <i className="bi bi-heart"></i>
                               </button>
 
                            </div>
@@ -365,7 +365,7 @@ const handleAddToCart = async (product) => {
                </div>
             </div>
          </section>
-         <section className="mt-lg-14 mt-8">
+         <section className="mt-lg-8 mt-8">
             <div className="container">
                <div className="row">
                   <div className="col-md-12">
@@ -435,7 +435,7 @@ const handleAddToCart = async (product) => {
                      {/*-- tab content --*/}
                      <div className="tab-content" id="myTabContent">
                         {/*-- tab pane --*/}
-                        <div className="tab-pane fade show active" id="product-tab-pane" role="tabpanel" aria-labelledby="product-tab" tabindex="0">
+                        <div className="tab-pane fade show active" id="product-tab-pane" role="tabpanel" aria-labelledby="product-tab" tabIndex="0">
                            <div className="my-8">
                               <div className="mb-5">
                                  {/*-- text --*/}
@@ -449,7 +449,7 @@ const handleAddToCart = async (product) => {
                            </div>
                         </div>
                         {/*-- tab pane --*/}
-                        <div className="tab-pane fade" id="details-tab-pane" role="tabpanel" aria-labelledby="details-tab" tabindex="0">
+                        <div className="tab-pane fade" id="details-tab-pane" role="tabpanel" aria-labelledby="details-tab" tabIndex="0">
                            <div className="my-8">
                               <div className="row">
                                  <div className="col-12">
@@ -525,7 +525,7 @@ const handleAddToCart = async (product) => {
                            </div>
                         </div>
                         {/*-- tab pane --*/}
-                        <div className="tab-pane fade" id="reviews-tab-pane" role="tabpanel" aria-labelledby="reviews-tab" tabindex="0">
+                        <div className="tab-pane fade" id="reviews-tab-pane" role="tabpanel" aria-labelledby="reviews-tab" tabIndex="0">
                            <div className="my-8">
                               {/*-- row --*/}
                               <div className="row">
@@ -632,7 +632,7 @@ const handleAddToCart = async (product) => {
                                           <div>
                                              <select className="form-select">
                                                 <option selected>Top Reviews</option>
-                                                <option value="Most Recent">Most Recent</option>
+                                                <option defaultValue="Most Recent">Most Recent</option>
                                              </select>
                                           </div>
                                        </div>
@@ -849,7 +849,7 @@ const handleAddToCart = async (product) => {
                            </div>
                         </div>
                         {/*-- tab pane --*/}
-                        <div className="tab-pane fade" id="sellerInfo-tab-pane" role="tabpanel" aria-labelledby="sellerInfo-tab" tabindex="0">
+                        <div className="tab-pane fade" id="sellerInfo-tab-pane" role="tabpanel" aria-labelledby="sellerInfo-tab" tabIndex="0">
 
                            <h2>Seller Informartion</h2>
                         </div>
@@ -860,7 +860,7 @@ const handleAddToCart = async (product) => {
          </section>
 
        {/* section */}
-<section className="my-lg-14 my-14">
+<section className="my-lg-8 my-8">
    <div className="container">
 
       {/* heading */}
@@ -955,7 +955,7 @@ const handleAddToCart = async (product) => {
 
                         <h2 className="fs-6">
                            <Link
-                                 to={`/productSingle/${item.category_id}/${item.id}`}
+                                 to={`/productSingle/${item.category_id}/${item.product_id}`}
                                  className="text-inherit text-decoration-none"
                               >
                                  {item.name}
@@ -978,7 +978,7 @@ const handleAddToCart = async (product) => {
                         </div>
 
                         {/* price */}
-                        <div className="d-flex justify-content-between align-items-center mt-3">
+                        <div className="d-flex justify-content-between align-items-center mt-1">
                            <div>
                              <span className="text-dark">
                                  Rs.{item.final_price}
@@ -993,15 +993,19 @@ const handleAddToCart = async (product) => {
                               }
                            </div>
 
+                          
+                        </div>
+                         <div className="d-flex justify-content-between align-items-center mt-1">
                            <div>
                               <button
                                  className="btn btn-primary btn-sm"
                                  onClick={() => handleAddToCart(item)}
                               >
-                                 Add to cart
+                                 ADD TO CART
                               </button>
                            </div>
-                        </div>
+                           <button className="btn btn-success btn-sm" data-bs-toggle="tooltip" data-bs-html="true" aria-label="Wishlist" data-bs-original-title="Wishlist" onClick={() => addWishListData(item)}><i className="bi bi-heart"></i></button>
+                         </div>
 
                      </div>
                   </div>

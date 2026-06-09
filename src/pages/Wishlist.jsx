@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import Footer from "../components/Footer"
 import Header from "../components/Header"
 import { useCart } from "../context/CartContext";
@@ -7,7 +8,7 @@ import Swal from "sweetalert2";
 const Wishlist = ()=>{
    const {wishlistItem,wishCount} = useWishlist([]);
     const { addToCart } = useCart()
-   console.log("Wishlist Items from wish",wishlistItem)
+  // console.log("Wishlist Items from wish",wishlistItem)
    const removeWishList = async (id)=>{
       try {
          const res = await deleteWishList(id);
@@ -18,6 +19,7 @@ const Wishlist = ()=>{
                title: "Success",
                text: "Wish List remove successfully !",
                });
+               
          }
       } catch (error) {
          console.log(error)
@@ -26,18 +28,18 @@ const Wishlist = ()=>{
     return(
     <div>{/*  */}
     <Header/>
-          <div class="mt-4">
-            <div class="container">
+          <div className="mt-4">
+            <div className="container">
               {/* row */}
-               <div class="row">
+               <div className="row">
                  {/* col */}
-                  <div class="col-12">
+                  <div className="col-12">
                     {/* breadcrumb */}
                      <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0">
-                           <li class="breadcrumb-item"><a href="#!">Home</a></li>
-                           <li class="breadcrumb-item"><a href="#!">Shop</a></li>
-                           <li class="breadcrumb-item active" aria-current="page">My Wishlist</li>
+                        <ol className="breadcrumb mb-0">
+                           <li className="breadcrumb-item"><a href="#!">Home</a></li>
+                           <li className="breadcrumb-item"><a href="#!">Shop</a></li>
+                           <li className="breadcrumb-item active" aria-current="page">My Wishlist</li>
                         </ol>
                      </nav>
                   </div>
@@ -45,29 +47,29 @@ const Wishlist = ()=>{
             </div>
          </div>
         {/* section */}
-         <section class="mt-8 mb-14">
-            <div class="container">
+         <section className="mt-8 mb-14">
+            <div className="container">
               {/* row */}
-               <div class="row">
-                  <div class="col-lg-12">
-                     <div class="mb-8">
+               <div className="row">
+                  <div className="col-lg-12">
+                     <div className="mb-8">
                        {/* heading */}
-                        <h1 class="mb-1">My Wishlist</h1>
+                        <h1 className="mb-1">My Wishlist</h1>
                         <p>There are {wishCount} products in this wishlist.</p>
                      </div>
                      <div>
                        {/* table */}
-                        <div class="table-responsive">
-                           <table class="table text-nowrap table-with-checkbox">
-                              <thead class="table-light">
+                        <div className="table-responsive">
+                           <table className="table text-nowrap table-with-checkbox">
+                              <thead className="table-light">
                                  <tr>
                                     <th>
                                       {/* form check */}
-                                       <div class="form-check">
+                                       <div className="form-check">
                                          {/* input */}
-                                          <input class="form-check-input" type="checkbox" value="" id="checkAll" />
+                                          <input className="form-check-input" type="checkbox" value="" id="checkAll" />
                                          {/* label */}
-                                          <label class="form-check-label" for="checkAll"></label>
+                                          <label className="form-check-label" htmlFor="checkAll"></label>
                                        </div>
                                     </th>
                                     <th></th>
@@ -106,10 +108,13 @@ const Wishlist = ()=>{
 
                                     <td className="align-middle">
                                        <div>
-                                          <h5 className="fs-6 mb-0">
-                                          <a href="#" className="text-inherit">
-                                             {item.name}
-                                          </a>
+                                          <h5 className="fs-6 mb-0 product-title">
+                                             <NavLink
+                                                to={`/productSingle/${item.category_id}/${item.product_id}`}
+                                                className="text-inherit"
+                                             >
+                                                {item.name}
+                                             </NavLink>
                                           </h5>
                                        </div>
                                     </td>
@@ -139,12 +144,12 @@ const Wishlist = ()=>{
                                     </td>
 
                                     <td className="align-middle">
-                                       <button
+                                       <NavLink
                                           onClick={() => removeWishList(item)}
                                           className="text-muted"
-                                       >
+                                       >Delete
                                           <i className="feather-icon icon-trash-2"></i>
-                                       </button>
+                                       </NavLink>
                                     </td>
                                     </tr>
                                  ))

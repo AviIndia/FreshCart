@@ -22,7 +22,7 @@ export const myorderDetails = async (id) => {
   
    try {
 
-      const res = await api.get(`/order/getOrderdetails.php?order_id=${id}`,
+      const res = await api.get(`/order/getOrderDetails.php?order_id=${id}`,
          {
             headers: {
                Authorization: `Bearer ${token}`

@@ -125,14 +125,15 @@ const secondColumn = categories.slice(half);
                         </ul>
                      </div>
                      <div className="col-6 col-sm-6 col-md-3">
-                        <h6 className="mb-4 text-white">Freshcart programs</h6>
+                        <h6 className="mb-4 text-white">Authentic Grocery</h6>
                         <ul className="nav flex-column">
                            {/*  list */}
-                           <li className="nav-item mb-2"><NavLink to={"/"} className="nav-link">Freshcart programs</NavLink></li>
+                         
                            <li className="nav-item mb-2"><NavLink to={"/"} className="nav-link">Gift Cards</NavLink></li>
                            <li className="nav-item mb-2"><NavLink to={"/"} className="nav-link">Promos & Coupons</NavLink></li>
                            <li className="nav-item mb-2"><NavLink to={"/"} className="nav-link">Freshcart Ads</NavLink></li>
                            <li className="nav-item mb-2"><NavLink to={"/"} className="nav-link">Careers</NavLink></li>
+                           <li className="nav-item mb-2"><NavLink to={"https://mispltd.co.in/groceryAdmin/"} className="nav-link">Admin Login</NavLink></li>
                         </ul>
                      </div>
                   </div>
